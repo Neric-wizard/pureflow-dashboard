@@ -1,9 +1,20 @@
 // src/components/SystemStatus.jsx
 export default function SystemStatus({ sensors }) {
+  const { turbidity = 12.3, pH = 6.1 } = sensors || {}
+
   // UV mode based on turbidity
-  const uvMode = sensors.turbidity > 8 ? 'FULL POWER' : sensors.turbidity > 4 ? 'STANDBY' : 'OFF'
-  const uvColor = sensors.turbidity > 8 ? 'text-red-400' : sensors.turbidity > 4 ? 'text-amber-400' : 'text-green-400'
-  const uvDot = sensors.turbidity > 8 ? 'bg-red-500' : sensors.turbidity > 4 ? 'bg-amber-500' : 'bg-green-500'
+  const uvMode = turbidity > 8 ? 'FULL POWER' : turbidity > 4 ? 'STANDBY' : 'OFF'
+  const uvColor = turbidity > 8 ? 'text-red-400' : turbidity > 4 ? 'text-amber-400' : 'text-green-400'
+  const uvDot = turbidity > 8 ? 'bg-red-500' : turbidity > 4 ? 'bg-amber-500' : 'bg-green-500'
+
+  // Output Valve status (ESP32-controlled safety valve)
+  const pHOk = pH >= 6.5 && pH <= 8.5
+  const secT = parseFloat((turbidity * 0.25).toFixed(1))
+  const safe = secT < 4 && pHOk
+  const valveStatus = safe ? 'OPEN' : 'CLOSED'
+  const valveColor = safe ? 'text-green-400' : 'text-red-400'
+  const valveDot = safe ? 'bg-green-500' : 'bg-red-500'
+  const valveReason = safe ? 'Water quality verified' : turbidity > 8 ? 'High turbidity' : !pHOk ? 'pH out of range' : 'Treatment in progress'
 
   // Carbon filter life (simulated — will come from Firebase later)
   const carbonLife = 38
@@ -73,7 +84,17 @@ export default function SystemStatus({ sensors }) {
           <span className={`font-mono text-xs ${uvColor}`}>{uvMode}</span>
         </div>
 
-        {/* Output valve — REMOVED ✅ */}
+        {/* Output Valve — ESP32-controlled safety valve */}
+        <div className="flex items-center justify-between border-t border-gray-800 pt-2 mt-1">
+          <div className="flex items-center gap-2">
+            <div className={`w-1.5 h-1.5 rounded-full ${valveDot}`}></div>
+            <span className="text-xs text-gray-400">Output valve (safety)</span>
+          </div>
+          <div className="text-right">
+            <span className={`font-mono text-xs font-bold ${valveColor}`}>{valveStatus}</span>
+            <div className="text-[8px] font-mono text-gray-600">{valveReason}</div>
+          </div>
+        </div>
       </div>
     </div>
   )

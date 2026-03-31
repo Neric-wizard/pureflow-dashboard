@@ -1,9 +1,9 @@
 // src/components/IsoPipeline.jsx
 // ─────────────────────────────────────────────────────────────────
-// 11-stage 3D isometric pipeline
+// 12-stage 3D isometric pipeline
 // Edison's confirmed flow order:
 // Inlet → Sediment → Chlorine → Tank → Manual Valve →
-// Carbon → Sensors → Decision → UV → Sampling → Supply
+// Carbon → Sensors → Decision → UV → Sampling → Output Valve → Supply
 // ─────────────────────────────────────────────────────────────────
 
 // ── Helpers ───────────────────────────────────────────────────────
@@ -25,10 +25,15 @@ function decisionColor(mode) {
   return                         { fill: '#071a10', stroke: 'rgba(31,209,138,0.6)',  text: '#1fd18a', sub: '#1a6b40', subText: 'UV Off' }
 }
 
+function outputValveStatus(safe) {
+  if (safe) return { text: 'OPEN', color: '#1fd18a', fill: '#071a10', stroke: 'rgba(31,209,138,0.6)' }
+  return { text: 'CLOSED', color: '#e84545', fill: '#1a0808', stroke: 'rgba(232,69,69,0.6)' }
+}
+
 function supplyColor(safe) {
   return safe
     ? { fill: '#071a10', stroke: 'rgba(31,209,138,0.6)',  text: '#1fd18a', sub: '#1a6b40', subText: 'Safe water flowing' }
-    : { fill: '#1a1200', stroke: 'rgba(240,160,0,0.6)',   text: '#f0a000', sub: '#806000', subText: 'Treatment in progress' }
+    : { fill: '#1a1200', stroke: 'rgba(240,160,0,0.6)',   text: '#f0a000', sub: '#806000', subText: 'Valve closed — unsafe' }
 }
 // ──────────────────────────────────────────────────────────────────
 
@@ -40,10 +45,11 @@ export default function IsoPipeline({ sensors }) {
   const pHOk    = pH >= 6.5 && pH <= 8.5
   const safe    = secT < 4 && pHOk
   const dc      = decisionColor(mode)
+  const ov      = outputValveStatus(safe)
   const sc      = supplyColor(safe)
-  const redPipe = pipeColor('FULL')   // before treatment
-  const bluPipe = pipeColor('STANDBY') // mid treatment
-  const grnPipe = pipeColor('OFF')     // after treatment
+  const redPipe = pipeColor('FULL')
+  const bluPipe = pipeColor('STANDBY')
+  const grnPipe = pipeColor('OFF')
 
   // UV badge
   const uvBadge = mode === 'FULL' ? 'FULL PWR' : mode === 'STANDBY' ? 'STANDBY' : 'OFF'
@@ -59,7 +65,7 @@ export default function IsoPipeline({ sensors }) {
       <div className="flex items-start justify-between mb-3 flex-wrap gap-2">
         <div>
           <p className="font-mono text-[9px] text-gray-500 uppercase tracking-widest mb-0.5">
-            Live water treatment pipeline · 11 stages
+            Live water treatment pipeline · 12 stages
           </p>
           <p className="text-[9px] text-gray-600">
             Water inlet → household supply · Edison's confirmed flow
@@ -72,7 +78,9 @@ export default function IsoPipeline({ sensors }) {
             { color: '#3d8ef0', label: 'Treating' },
             { color: '#1fd18a', label: 'Safe / clean' },
             { color: '#f0a000', label: 'Filtering' },
-            { color: '#a78bfa', label: 'Manual' },
+            { color: '#a78bfa', label: 'Manual valve' },
+            { color: '#e84545', label: 'Output valve (closed)' },
+            { color: '#1fd18a', label: 'Output valve (open)' },
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full" style={{ background: color }} />
@@ -84,8 +92,8 @@ export default function IsoPipeline({ sensors }) {
 
       {/* SVG Pipeline */}
       <svg
-        style={{ minWidth: '700px', width: '100%' }}
-        viewBox="0 0 720 580"
+        style={{ minWidth: '760px', width: '100%' }}
+        viewBox="0 0 780 620"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -100,27 +108,25 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="120,60 180,40 180,70 120,90"  fill="#0c1a35" stroke="rgba(61,142,240,0.4)"  strokeWidth="0.8"/>
         <text x="120" y="43" textAnchor="middle" fontSize="7.5" fill="#3d8ef0" fontFamily="JetBrains Mono,monospace" fontWeight="700">① INLET</text>
         <text x="120" y="54" textAnchor="middle" fontSize="6.5" fill="#3d5a80" fontFamily="DM Sans,sans-serif">Raw water enters</text>
-        {/* water drop icon */}
         <path d="M90 72 C90 72 87 76 87 78 a3 3 0 006 0 C93 76 90 72 90 72z" fill="rgba(61,142,240,0.5)" stroke="#3d8ef0" strokeWidth="0.5"/>
 
-        {/* pipe → Sediment (red = unfiltered) */}
+        {/* pipe → Sediment */}
         <rect x="180" y="35" width="38" height="8" rx="2" fill="#1a0808" stroke="rgba(232,69,69,0.25)" strokeWidth="0.5"/>
         <rect x="180" y="35" width="38" height="8" rx="2" fill="none"   stroke={redPipe} strokeWidth="0.5" strokeDasharray="4 3"
           style={{ animation: 'flowR .7s linear infinite' }}/>
         <polygon points="216,35 222,39 216,43" fill="rgba(232,69,69,0.6)"/>
 
-        {/* ② Sediment Filter — FIRST, protects everything downstream */}
+        {/* ② Sediment Filter */}
         <polygon points="228,40 288,20 348,40 288,60"  fill="#131000" stroke="rgba(240,160,0,0.55)" strokeWidth="0.8"/>
         <polygon points="228,40 288,60 288,95 228,75"  fill="#0e0c00" stroke="rgba(240,160,0,0.3)"  strokeWidth="0.8"/>
         <polygon points="288,60 348,40 348,75 288,95"  fill="#181400" stroke="rgba(240,160,0,0.4)"  strokeWidth="0.8"/>
         <text x="288" y="43" textAnchor="middle" fontSize="7"   fill="#f0a000" fontFamily="JetBrains Mono,monospace" fontWeight="700">② SEDIMENT</text>
         <text x="288" y="53" textAnchor="middle" fontSize="6.5" fill="#806000" fontFamily="DM Sans,sans-serif">Filter · catches dirt first</text>
-        {/* filter lines icon */}
         <line x1="248" y1="78" x2="268" y2="78" stroke="rgba(240,160,0,0.45)" strokeWidth="1.2" strokeLinecap="round"/>
         <line x1="248" y1="83" x2="263" y2="83" stroke="rgba(240,160,0,0.3)"  strokeWidth="1.2" strokeLinecap="round"/>
         <line x1="248" y1="88" x2="256" y2="88" stroke="rgba(240,160,0,0.2)"  strokeWidth="1.2" strokeLinecap="round"/>
 
-        {/* pipe → Chlorine (still unfiltered of bacteria) */}
+        {/* pipe → Chlorine */}
         <rect x="348" y="35" width="38" height="8" rx="2" fill="#1a0808" stroke="rgba(232,69,69,0.25)" strokeWidth="0.5"/>
         <rect x="348" y="35" width="38" height="8" rx="2" fill="none"   stroke={redPipe} strokeWidth="0.5" strokeDasharray="4 3"
           style={{ animation: 'flowR .7s linear infinite' }}/>
@@ -152,7 +158,6 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="456,168 516,148 516,190 456,210" fill="#0c1a35" stroke="rgba(61,142,240,0.4)"  strokeWidth="0.8"/>
         <text x="456" y="151" textAnchor="middle" fontSize="7"   fill="#3d8ef0" fontFamily="JetBrains Mono,monospace" fontWeight="700">④ TANK</text>
         <text x="456" y="161" textAnchor="middle" fontSize="6.5" fill="#1a3860" fontFamily="DM Sans,sans-serif">Storage + mixing</text>
-        {/* water level */}
         <rect x="416" y="180" width="32" height="20" rx="2" fill="rgba(61,142,240,0.15)" stroke="rgba(61,142,240,0.3)" strokeWidth="0.5"/>
 
         {/* pipe LEFT → Manual Valve */}
@@ -161,18 +166,15 @@ export default function IsoPipeline({ sensors }) {
           style={{ animation: 'flowR .7s linear infinite' }}/>
         <polygon points="332,161 326,165 332,169" fill="rgba(232,69,69,0.6)"/>
 
-        {/* ⑤ Manual Valve — STATIC, no sensors, person-operated */}
+        {/* ⑤ Manual Valve — STATIC, hand-operated */}
         <polygon points="216,148 276,128 336,148 276,168" fill="#110a1a" stroke="rgba(167,139,250,0.55)" strokeWidth="0.8"/>
         <polygon points="216,148 276,168 276,200 216,180" fill="#0c0714" stroke="rgba(167,139,250,0.3)"  strokeWidth="0.8"/>
         <polygon points="276,168 336,148 336,180 276,200" fill="#140b22" stroke="rgba(167,139,250,0.4)"  strokeWidth="0.8"/>
         <text x="276" y="151" textAnchor="middle" fontSize="7"   fill="#a78bfa" fontFamily="JetBrains Mono,monospace" fontWeight="700">⑤ MANUAL VALVE</text>
         <text x="276" y="161" textAnchor="middle" fontSize="6.5" fill="#6d5a9e" fontFamily="DM Sans,sans-serif">Hand-operated · maintenance</text>
-        {/* valve wheel graphic */}
         <circle cx="246" cy="184" r="8"  fill="none" stroke="rgba(167,139,250,0.4)" strokeWidth="1"/>
         <line x1="238" y1="184" x2="254" y2="184" stroke="#a78bfa" strokeWidth="0.8"/>
         <line x1="246" y1="176" x2="246" y2="192" stroke="#a78bfa" strokeWidth="0.8"/>
-        <circle cx="246" cy="184" r="2.5" fill="rgba(167,139,250,0.4)" stroke="#a78bfa" strokeWidth="0.6"/>
-        <text x="246" y="198" textAnchor="middle" fontSize="5.5" fill="#6d5a9e" fontFamily="DM Sans,sans-serif">turn to close</text>
 
         {/* pipe DOWN from Manual Valve → Carbon */}
         <rect x="271" y="200" width="8" height="30" rx="2" fill="#131000" stroke="rgba(240,160,0,0.25)" strokeWidth="0.5"/>
@@ -191,7 +193,6 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="276,273 336,253 336,285 276,305" fill="#181400" stroke="rgba(240,160,0,0.4)"  strokeWidth="0.8"/>
         <text x="276" y="256" textAnchor="middle" fontSize="7"   fill="#f0a000" fontFamily="JetBrains Mono,monospace" fontWeight="700">⑥ CARBON</text>
         <text x="276" y="266" textAnchor="middle" fontSize="6.5" fill="#806000" fontFamily="DM Sans,sans-serif">Filter · removes impurities</text>
-        {/* carbon columns */}
         <rect x="240" y="284" width="6" height="16" rx="2" fill="rgba(240,160,0,0.2)" stroke="rgba(240,160,0,0.4)" strokeWidth="0.5"/>
         <rect x="250" y="284" width="6" height="16" rx="2" fill="rgba(240,160,0,0.2)" stroke="rgba(240,160,0,0.4)" strokeWidth="0.5"/>
         <rect x="260" y="284" width="6" height="16" rx="2" fill="rgba(240,160,0,0.15)" stroke="rgba(240,160,0,0.3)" strokeWidth="0.5"/>
@@ -208,7 +209,6 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="460,273 520,253 520,288 460,308" fill="#0c1a35" stroke="rgba(61,142,240,0.5)"  strokeWidth="0.8"/>
         <text x="460" y="256" textAnchor="middle" fontSize="7"   fill="#3d8ef0" fontFamily="JetBrains Mono,monospace" fontWeight="700">⑦ SENSORS</text>
         <text x="460" y="266" textAnchor="middle" fontSize="6.5" fill="#1a3860" fontFamily="DM Sans,sans-serif">Primary chamber</text>
-        {/* live sensor readings */}
         <text x="410" y="286" fontSize="6" fill={turbidity > 8 ? '#e84545' : turbidity > 4 ? '#f0a000' : '#1fd18a'} fontFamily="JetBrains Mono,monospace">
           T:{turbidity.toFixed(1)}
         </text>
@@ -218,7 +218,6 @@ export default function IsoPipeline({ sensors }) {
         <text x="410" y="304" fontSize="6" fill={conductivity > 500 ? '#f0a000' : '#1fd18a'} fontFamily="JetBrains Mono,monospace">
           C:{Math.round(conductivity)}
         </text>
-        {/* scanning dot */}
         <circle cx="500" cy="285" r="5"   fill="rgba(61,142,240,0.2)" stroke="#3d8ef0" strokeWidth="0.8"/>
         <circle cx="500" cy="285" r="2"   fill="#3d8ef0"/>
 
@@ -233,7 +232,7 @@ export default function IsoPipeline({ sensors }) {
             ⑧ Decision  ⑨ UV  ⑩ Sampling
             ════════════════════════════════════════ */}
 
-        {/* ⑧ Decision Point — dashed border, changes color live */}
+        {/* ⑧ Decision Point */}
         <polygon points="400,360 460,343 520,360 460,377"
           fill={dc.fill} stroke={dc.stroke} strokeWidth="0.8" strokeDasharray="4 2"/>
         <polygon points="400,360 460,377 460,400 400,383"
@@ -244,7 +243,6 @@ export default function IsoPipeline({ sensors }) {
           stroke={dc.stroke} strokeWidth="0.8" strokeDasharray="4 2"/>
         <text x="460" y="363" textAnchor="middle" fontSize="7"   fill={dc.text} fontFamily="JetBrains Mono,monospace" fontWeight="700">⑧ DECISION</text>
         <text x="460" y="373" textAnchor="middle" fontSize="6.5" fill={dc.sub}  fontFamily="DM Sans,sans-serif">{dc.subText}</text>
-        {/* warning triangle */}
         <path d="M428 390 L435 379 L442 390 Z" fill={`${dc.fill}88`} stroke={dc.stroke} strokeWidth="0.6"/>
         <text x="435" y="388" textAnchor="middle" fontSize="5" fill={dc.text}>!</text>
 
@@ -260,25 +258,20 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="632,377 692,360 692,390 632,407" fill="#091830" stroke="rgba(61,142,240,0.6)"  strokeWidth="0.8"/>
         <text x="632" y="363" textAnchor="middle" fontSize="7"   fill="#3d8ef0" fontFamily="JetBrains Mono,monospace" fontWeight="700">⑨ UV STERILIZER</text>
         <text x="632" y="373" textAnchor="middle" fontSize="6.5" fill="#1a3860" fontFamily="DM Sans,sans-serif">{uvSubText}</text>
-        {/* UV glow rings */}
         <circle cx="596" cy="392" r="10" fill="rgba(61,142,240,0.1)"  stroke="rgba(61,142,240,0.3)"  strokeWidth="0.8"
           style={{ animation: 'uvPulse 1.4s ease-in-out infinite' }}/>
         <circle cx="596" cy="392" r="6"  fill="rgba(61,142,240,0.2)"  stroke="#3d8ef0" strokeWidth="1"
           style={{ animation: 'uvPulse 1.4s ease-in-out infinite' }}/>
-        <circle cx="596" cy="392" r="2.5" fill="#3d8ef0"/>
-        {/* UV badge */}
         <rect x="613" y="396" width="36" height="10" rx="3"
-          fill={uvBadgeFill} stroke={uvBadgeStroke} strokeWidth="0.5"
-          style={{ transition: 'fill 0.4s, stroke 0.4s' }}/>
+          fill={uvBadgeFill} stroke={uvBadgeStroke} strokeWidth="0.5"/>
         <text x="631" y="403" textAnchor="middle" fontSize="6.5" fill={uvBadgeColor}
-          fontFamily="JetBrains Mono,monospace" fontWeight="700"
-          style={{ transition: 'fill 0.4s' }}>
+          fontFamily="JetBrains Mono,monospace" fontWeight="700">
           {uvBadge}
         </text>
 
         {/* ════════════════════════════════════════
             ROW 5:
-            ⑩ Sampling  ⑪ Household Supply
+            ⑩ Sampling  ⑪ Output Valve  ⑫ Supply
             ════════════════════════════════════════ */}
 
         {/* pipe DOWN from UV → Sampling */}
@@ -293,65 +286,81 @@ export default function IsoPipeline({ sensors }) {
         <polygon points="632,477 692,460 692,490 632,507" fill="#0c1a35" stroke="rgba(61,142,240,0.4)"  strokeWidth="0.8"/>
         <text x="632" y="463" textAnchor="middle" fontSize="7"   fill="#3d8ef0" fontFamily="JetBrains Mono,monospace" fontWeight="700">⑩ SAMPLING</text>
         <text x="632" y="473" textAnchor="middle" fontSize="6.5" fill="#1a3860" fontFamily="DM Sans,sans-serif">Secondary sensors verify</text>
-        {/* check circle */}
         <circle cx="592" cy="492" r="8"  fill="rgba(31,209,138,0.15)" stroke="rgba(31,209,138,0.4)" strokeWidth="0.8"/>
         <path d="M589 492 L592 495 L597 489" stroke="#1fd18a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-        {/* post-UV reading */}
-        <text x="607" y="490" fontSize="6" fill="#1fd18a" fontFamily="JetBrains Mono,monospace">
-          Post:{secT}NTU
-        </text>
+        <text x="607" y="490" fontSize="6" fill="#1fd18a" fontFamily="JetBrains Mono,monospace">Post:{secT}NTU</text>
         <text x="607" y="499" fontSize="6" fill={safe ? '#1fd18a' : '#f0a000'} fontFamily="JetBrains Mono,monospace">
           {safe ? 'VERIFIED ✓' : 'CHECKING...'}
         </text>
 
-        {/* pipe LEFT from Sampling → Household Supply */}
-        <rect x="392" y="473" width="176" height="8" rx="2"
-          fill={safe ? '#071a10' : '#1a1200'}
-          stroke={safe ? 'rgba(31,209,138,0.25)' : 'rgba(240,160,0,0.25)'} strokeWidth="0.5"/>
+        {/* pipe LEFT → Output Valve */}
+        <rect x="392" y="473" width="176" height="8" rx="2" fill={safe ? '#071a10' : '#1a0808'} stroke="rgba(31,209,138,0.25)" strokeWidth="0.5"/>
         <rect x="392" y="473" width="176" height="8" rx="2" fill="none"
-          stroke={safe ? 'rgba(31,209,138,0.7)' : 'rgba(240,160,0,0.7)'} strokeWidth="0.5" strokeDasharray="4 3"
-          style={{ animation: 'flowR 1.3s linear infinite' }}/>
+          stroke={safe ? 'rgba(31,209,138,0.7)' : 'rgba(232,69,69,0.7)'} strokeWidth="0.5" strokeDasharray="4 3"
+          style={{ animation: safe ? 'flowR 1.3s linear infinite' : 'none' }}/>
         <polygon points="396,473 390,477 396,481"
-          fill={safe ? 'rgba(31,209,138,0.7)' : 'rgba(240,160,0,0.7)'}/>
+          fill={safe ? 'rgba(31,209,138,0.7)' : 'rgba(232,69,69,0.7)'}/>
 
-        {/* ⑪ Household Supply */}
+        {/* ⑪ Output Valve — ESP32-controlled safety valve */}
         <polygon points="216,460 276,443 336,460 276,477"
-          fill={sc.fill} stroke={sc.stroke} strokeWidth="0.9"
+          fill={ov.fill} stroke={ov.stroke} strokeWidth="0.9"
           style={{ transition: 'fill 0.5s, stroke 0.5s' }}/>
         <polygon points="216,460 276,477 276,510 216,493"
-          fill={safe ? '#051210' : '#120e00'} stroke={safe ? 'rgba(31,209,138,0.35)' : 'rgba(240,160,0,0.35)'} strokeWidth="0.8"
+          fill={safe ? '#051210' : '#120505'} stroke={safe ? 'rgba(31,209,138,0.35)' : 'rgba(232,69,69,0.35)'} strokeWidth="0.8"
           style={{ transition: 'fill 0.5s' }}/>
         <polygon points="276,477 336,460 336,493 276,510"
-          fill={safe ? '#092015' : '#181200'} stroke={safe ? 'rgba(31,209,138,0.5)' : 'rgba(240,160,0,0.5)'} strokeWidth="0.8"
+          fill={safe ? '#092015' : '#170707'} stroke={safe ? 'rgba(31,209,138,0.5)' : 'rgba(232,69,69,0.5)'} strokeWidth="0.8"
           style={{ transition: 'fill 0.5s' }}/>
-        <text x="276" y="462" textAnchor="middle" fontSize="7"   fill={sc.text} fontFamily="JetBrains Mono,monospace" fontWeight="700"
+        <text x="276" y="463" textAnchor="middle" fontSize="7"   fill={ov.color} fontFamily="JetBrains Mono,monospace" fontWeight="700"
           style={{ transition: 'fill 0.5s' }}>
-          ⑪ HOUSEHOLD SUPPLY
+          ⑪ OUTPUT VALVE
         </text>
-        <text x="276" y="472" textAnchor="middle" fontSize="6.5" fill={sc.sub}  fontFamily="DM Sans,sans-serif"
+        <text x="276" y="473" textAnchor="middle" fontSize="6.5" fill={safe ? '#1a6b40' : '#803030'} fontFamily="DM Sans,sans-serif"
           style={{ transition: 'fill 0.5s' }}>
+          {safe ? 'SAFE — OPEN' : 'UNSAFE — CLOSED'}
+        </text>
+        {/* valve icon */}
+        <circle cx="246" cy="492" r="7" fill="none" stroke={ov.color} strokeWidth="1"/>
+        <line x1="239" y1="492" x2="253" y2="492" stroke={ov.color} strokeWidth="0.8"/>
+        <line x1="246" y1="485" x2="246" y2="499" stroke={ov.color} strokeWidth="0.8"/>
+
+        {/* pipe LEFT → Household Supply */}
+        <rect x="336" y="473" width="56" height="8" rx="2" fill="#071a10" stroke="rgba(31,209,138,0.25)" strokeWidth="0.5"/>
+        <rect x="336" y="473" width="56" height="8" rx="2" fill="none" stroke={safe ? 'rgba(31,209,138,0.7)' : 'rgba(240,160,0,0.5)'}
+          strokeWidth="0.5" strokeDasharray="4 3" style={{ animation: safe ? 'flowR 1.3s linear infinite' : 'none' }}/>
+        <polygon points="390,473 396,477 390,481" fill={safe ? 'rgba(31,209,138,0.7)' : 'rgba(240,160,0,0.5)'}/>
+
+        {/* ⑫ Household Supply */}
+        <polygon points="400,460 460,443 520,460 460,477"
+          fill={sc.fill} stroke={sc.stroke} strokeWidth="0.9"
+          style={{ transition: 'fill 0.5s, stroke 0.5s' }}/>
+        <polygon points="400,460 460,477 460,510 400,493"
+          fill={safe ? '#051210' : '#120e00'} stroke={safe ? 'rgba(31,209,138,0.35)' : 'rgba(240,160,0,0.35)'} strokeWidth="0.8"/>
+        <polygon points="460,477 520,460 520,493 460,510"
+          fill={safe ? '#092015' : '#181200'} stroke={safe ? 'rgba(31,209,138,0.5)' : 'rgba(240,160,0,0.5)'} strokeWidth="0.8"/>
+        <text x="460" y="462" textAnchor="middle" fontSize="7"   fill={sc.text} fontFamily="JetBrains Mono,monospace" fontWeight="700">
+          ⑫ HOUSEHOLD SUPPLY
+        </text>
+        <text x="460" y="472" textAnchor="middle" fontSize="6.5" fill={sc.sub}  fontFamily="DM Sans,sans-serif">
           {sc.subText}
         </text>
-        {/* house icon */}
-        <path d="M236 493 L244 485 L252 493 L252 503 L236 503 Z"
+        <path d="M420 493 L428 485 L436 493 L436 503 L420 503 Z"
           fill={safe ? 'rgba(31,209,138,0.15)' : 'rgba(240,160,0,0.1)'}
-          stroke={safe ? 'rgba(31,209,138,0.5)' : 'rgba(240,160,0,0.4)'} strokeWidth="0.7"
-          style={{ transition: 'fill 0.5s, stroke 0.5s' }}/>
-        {/* water drops (only show when safe) */}
+          stroke={safe ? 'rgba(31,209,138,0.5)' : 'rgba(240,160,0,0.4)'} strokeWidth="0.7"/>
         {safe && (
           <>
-            <path d="M292 490 C292 490 290 494 290 496 a2 2 0 004 0 C294 494 292 490 292 490z"
+            <path d="M476 490 C476 490 474 494 474 496 a2 2 0 004 0 C478 494 476 490 476 490z"
               fill="rgba(31,209,138,0.5)" stroke="#1fd18a" strokeWidth="0.5"
               style={{ animation: 'supplyPulse 1.8s ease-in-out infinite' }}/>
-            <path d="M300 493 C300 493 298 496 298 498 a2 2 0 004 0 C302 496 300 493 300 493z"
+            <path d="M484 493 C484 493 482 496 482 498 a2 2 0 004 0 C486 496 484 493 484 493z"
               fill="rgba(31,209,138,0.4)" stroke="#1fd18a" strokeWidth="0.5"
               style={{ animation: 'supplyPulse 1.8s ease-in-out infinite', animationDelay: '.4s' }}/>
           </>
         )}
 
         {/* Stage key */}
-        <text x="30" y="568" fontSize="7" fill="rgba(61,142,240,0.3)" fontFamily="JetBrains Mono,monospace">
-          ① Inlet  ② Sediment  ③ Chlorine  ④ Tank  ⑤ Manual Valve  ⑥ Carbon  ⑦ Sensors  ⑧ Decision  ⑨ UV  ⑩ Sampling  ⑪ Supply
+        <text x="30" y="605" fontSize="7" fill="rgba(61,142,240,0.3)" fontFamily="JetBrains Mono,monospace">
+          ① Inlet  ② Sediment  ③ Chlorine  ④ Tank  ⑤ Manual Valve  ⑥ Carbon  ⑦ Sensors  ⑧ Decision  ⑨ UV  ⑩ Sampling  ⑪ Output Valve  ⑫ Supply
         </text>
 
         {/* CSS Animations */}
