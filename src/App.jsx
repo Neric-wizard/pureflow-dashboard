@@ -131,7 +131,6 @@ export default function App() {
           <DecisionEngine sensors={sensors} />
         </div>
         <Charts data={chartHistory} />
-        <Charts data={chartHistory} />
 {role === 'technician' && <TechnicianView sensors={sensors} />}
       </main>
     </div>
