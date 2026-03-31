@@ -68,7 +68,9 @@ export default function IsoPipeline({ sensors }) {
             Live water treatment pipeline · 12 stages
           </p>
           <p className="text-[9px] text-gray-600">
-            Water inlet → household supply · Edison's confirmed flow
+            <p className="text-[9px] text-gray-600">
+           Water inlet → household supply
+          </p>
           </p>
         </div>
         {/* Legend */}
