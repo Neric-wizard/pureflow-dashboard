@@ -3,6 +3,7 @@ import SafetyGauge from './components/SafetyGauge'
 import SensorCards from './components/SensorCards'
 import SystemStatus from './components/SystemStatus'
 import IsoPipeline from './components/IsoPipeline'
+import DecisionEngine from './components/DecisionEngine'
 
 // ── Simulated sensor data ──────────────────────────
 // Mech engineer replaces this with Firebase later
@@ -117,6 +118,10 @@ export default function App() {
         <SensorCards sensors={sensors} />
         <SystemStatus sensors={sensors} />
         <IsoPipeline sensors={sensors} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <SystemStatus sensors={sensors} />
+    <DecisionEngine sensors={sensors} />
+  </div>
         {/* Next components go here */}
       </main>
     </div>
