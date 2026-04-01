@@ -96,26 +96,12 @@ function Header({ role, setRole, sensors }) {
 export default function App() {
   const [role, setRole] = useState('household')
   const [sensors, setSensors] = useState(generateSimData())
-  const [chartHistory, setChartHistory] = useState([])
 
   // Simulate live data — every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => setSensors(generateSimData()), 5000)
     return () => clearInterval(interval)
   }, [])
-
-  // Update chart history when sensors change
-  useEffect(() => {
-    setChartHistory(prev => {
-      const newEntry = {
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        turbidity: sensors.turbidity,
-        pH: sensors.pH
-      }
-      const updated = [...prev, newEntry]
-      return updated.slice(-24) // Keep last 24 entries
-    })
-  }, [sensors])
 
   const safetyScore = calcSafetyScore(sensors)
 
@@ -125,13 +111,15 @@ export default function App() {
       <main className="p-4 flex flex-col gap-3">
         <SafetyGauge score={safetyScore} />
         <SensorCards sensors={sensors} />
-        <IsoPipeline sensors={sensors} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+        <div className="grid grid-cols-1 lg:grid-cols-[185px_1fr_208px] gap-3">
           <SystemStatus sensors={sensors} />
+          <IsoPipeline sensors={sensors} />
           <DecisionEngine sensors={sensors} />
         </div>
-        <Charts data={chartHistory} />
-{role === 'technician' && <TechnicianView sensors={sensors} />}
+
+        <Charts sensors={sensors} />
+        {role === 'technician' && <TechnicianView sensors={sensors} />}
       </main>
     </div>
   )
