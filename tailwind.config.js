@@ -37,3 +37,12 @@ export default {
   },
   plugins: [],
 }
+animation: {
+  'scanline': 'scanline 3s linear infinite',
+},
+keyframes: {
+  scanline: {
+    '0%': { transform: 'translateY(-100%)' },
+    '100%': { transform: 'translateY(100%)' },
+  },
+},
