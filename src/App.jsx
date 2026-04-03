@@ -122,192 +122,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
     setTogglePosition(role === 'household' ? 0 : 1)
   }, [role])
 
-  // ── Reusable sub-sections (used in both desktop row and mobile panel) ──
-
-  const ModeToggle = () => (
-    <div className="flex items-center gap-2 bg-zinc-900/50 rounded-full p-0.5 border border-white/10 animate-slide-up [animation-delay:50ms]">
-      <button
-        className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white'}`}
-        onClick={() => setMode('demo')}
-      >
-        🎮 Demo Mode
-      </button>
-      <button
-        className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'connect' ? 'bg-green-500 text-white shadow-lg shadow-green-500/25' : 'text-gray-400 hover:text-white'}`}
-        onClick={() => setMode('connect')}
-      >
-        🔌 Connectivity Test
-      </button>
-    </div>
-  )
-
-  const HealthAndStatus = () => (
-    <div className="flex items-center gap-5">
-      {/* Circular Health Gauge */}
-      <div className="relative w-10 h-10 group">
-        {healthScore < 60 && (
-          <div className="absolute -top-1 -right-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-amber-500 animate-pulse z-20"/>
-        )}
-        {healthScore < 40 && (
-          <div className="absolute -top-1 -right-1 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-rose-500 animate-pulse z-20"/>
-        )}
-        <svg className="w-10 h-10 -rotate-90 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]" viewBox="0 0 36 36">
-          <defs>
-            <linearGradient id="healthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor={healthScore >= 80 ? '#22c55e' : healthScore >= 60 ? '#3b82f6' : healthScore >= 40 ? '#eab308' : '#ef4444'} />
-              <stop offset="100%" stopColor={healthScore >= 80 ? '#16a34a' : healthScore >= 60 ? '#2563eb' : healthScore >= 40 ? '#ca8a04' : '#dc2626'} />
-            </linearGradient>
-          </defs>
-          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#27272a" strokeWidth="3"/>
-          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#healthGradient)" strokeWidth="3" strokeDasharray={`${healthScore}, 100`} strokeLinecap="round" className="transition-all duration-700"/>
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[10px] font-mono font-bold tabular-nums transition-all duration-500 text-white">{animatedHealth}</span>
-        </div>
-      </div>
-
-      {/* Status Pill */}
-      {danger ? (
-        <div className="relative group">
-          <div className="absolute inset-0 bg-red-500/10 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
-          <div className="relative flex items-center gap-2 px-5 py-2 rounded-2xl bg-gradient-to-r from-red-950/80 to-zinc-950 border border-red-500/30 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.4)]">
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-40"></div>
-              <div className="relative w-1.5 h-1.5 rounded-full bg-red-500"></div>
-            </div>
-            <span className="font-mono text-[10px] font-semibold tracking-widest text-red-400 tabular-nums">{statusMessage}</span>
-          </div>
-        </div>
-      ) : (
-        <div className="relative group">
-          <div className="absolute inset-0 bg-green-500/10 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
-          <div className="relative flex items-center gap-2 px-5 py-2 rounded-2xl bg-gradient-to-r from-green-950/50 to-zinc-950 border border-green-500/30 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.4)]">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-            <span className="font-mono text-[10px] font-semibold tracking-widest text-green-400 tabular-nums">{statusMessage}</span>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-
-  const SensorCards = () => (
-    <div className="flex gap-2">
-      {/* Turbidity Card */}
-      <div className="group relative">
-        <div className="bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)] transition-all duration-500 hover:border-blue-500/60 hover:shadow-blue-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
-          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-          </svg>
-          <div className="flex items-center gap-1.5">
-            <svg className="w-8 h-3" viewBox="0 0 40 12" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="turbidityGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={turbidity > 8 ? '#ef4444' : '#3b82f6'} stopOpacity="0.5"/>
-                  <stop offset="100%" stopColor={turbidity > 8 ? '#ef4444' : '#3b82f6'} stopOpacity="0"/>
-                </linearGradient>
-              </defs>
-              <path d={sparklinePath} fill="none" stroke={turbidity > 8 ? '#ef4444' : '#3b82f6'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d={fillPath} fill="url(#turbidityGradient)"/>
-              <circle cx="40" cy={12 - (Math.min(turbidity, maxTurbidity) / maxTurbidity) * 12} r="2" fill={turbidity > 8 ? '#ef4444' : '#3b82f6'} className="animate-pulse"/>
-            </svg>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1">
-                <span className={`text-xs font-mono font-medium ${turbidity > 8 ? 'text-red-400' : turbidity > 4 ? 'text-amber-400' : 'text-blue-300'}`}>{turbidity.toFixed(1)}</span>
-                <span className="text-[9px] text-gray-400">NTU</span>
-              </div>
-              <div className={`text-[8px] font-mono ${trendColor} flex items-center gap-0.5`}>
-                <span>{trendDirection}</span>
-                <span>{Math.abs(parseFloat(trendPercent))}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* pH Card */}
-      <div className="group relative">
-        <div className="bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)] transition-all duration-500 hover:border-amber-500/60 hover:shadow-amber-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
-          <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-0.5">
-              <span className={`text-xs font-mono font-medium ${pH < 6.5 || pH > 8.5 ? 'text-rose-400' : 'text-amber-300'}`}>{pH.toFixed(1)}</span>
-              <span className="text-[9px] text-gray-400">pH</span>
-            </div>
-            <div className="text-[8px] text-emerald-400 flex items-center gap-0.5">
-              <span>▲</span><span>0.2%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
-  const RightControls = () => (
-    <div className="flex items-center gap-2">
-      {/* MQTT */}
-      <div className="relative group">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-white/10 backdrop-blur-sm cursor-pointer">
-          <div className="relative">
-            <div className={`absolute inset-0 ${connectionColor} rounded-full animate-ping opacity-40`}></div>
-            <div className={`relative w-1.5 h-1.5 rounded-full ${connectionColor}`}></div>
-          </div>
-          <span className="font-mono text-[8px] font-bold text-green-400 tracking-wider">MQTT</span>
-        </div>
-      </div>
-
-      {/* Location */}
-      <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
-        <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-        </svg>
-        {['CAMEROON', 'SW', 'BUEA', 'TANK_A1'].map((loc, i, arr) => (
-          <button key={loc} className="hover:text-blue-400 transition-colors cursor-pointer">
-            <span className={i === arr.length - 1 ? 'text-gray-300' : 'text-gray-500'}>{loc}</span>
-          </button>
-        ))}
-        <span className="flex h-1 w-1 rounded-full bg-blue-500 animate-pulse ml-1"></span>
-      </div>
-
-      {/* Timestamp */}
-      <div className="flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
-        <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-      </div>
-
-      {/* Role Toggle */}
-      <div className="relative">
-        <div className="flex bg-zinc-900/60 rounded-full p-0.5 backdrop-blur-md border border-white/10">
-          <div
-            className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300 ease-out shadow-lg shadow-blue-500/25"
-            style={{ transform: `translateX(${togglePosition === 0 ? '0%' : '100%'})`, width: 'calc(50% - 2px)' }}
-          ></div>
-          <button
-            className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'household' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
-            onClick={() => setRole('household')}
-          >
-            Household
-          </button>
-          <button
-            className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'technician' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
-            onClick={() => setRole('technician')}
-          >
-            Technician
-            {role === 'technician' && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 rounded-full flex items-center justify-center animate-bounce">
-                <span className="text-[8px] font-bold text-white">3</span>
-              </span>
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-
   return (
     <header
       className="relative bg-gradient-to-r from-gray-950 via-zinc-950 to-gray-950 border-b border-white/5 backdrop-blur-2xl overflow-hidden transition-colors duration-500"
@@ -504,7 +318,8 @@ function Header({ role, setRole, sensors, mode, setMode }) {
 
         {/* ── DESKTOP: Right Section (hidden on mobile) ── */}
         <div className="hidden md:flex items-center gap-2 animate-slide-up [animation-delay:200ms]">
-          {/* Live Indicator */}
+
+          {/* Live Indicator — always visible on desktop */}
           <div className="relative group">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-white/10 backdrop-blur-sm cursor-pointer">
               <div className="relative">
@@ -514,7 +329,7 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               <span className="font-mono text-[8px] font-bold text-green-400 tracking-wider">MQTT</span>
             </div>
             <div className="absolute top-full right-0 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-              <div className="bg-zinc-900/95 border border-white/10 rounded-xl px-3 py-2 backdrop-blur-md shadow-xl">
+              <div className="bg-zinc-900/95 border border-white/10 rounded-xl px-3 py-2 backdrop-blur-md shadow-xl whitespace-nowrap">
                 <div className="text-[9px] font-mono text-gray-400">Connection Details</div>
                 <div className={`text-[10px] ${latency < 50 ? 'text-green-400' : latency < 100 ? 'text-yellow-400' : 'text-rose-400'}`}>● Latency: {latency}ms</div>
                 <div className="text-[10px] text-green-400">● Uptime: 99.98%</div>
@@ -523,8 +338,8 @@ function Header({ role, setRole, sensors, mode, setMode }) {
             </div>
           </div>
 
-          {/* Location */}
-          <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
+          {/* Location — only at xl (1280px+) */}
+          <div className="hidden xl:flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
             <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -537,15 +352,15 @@ function Header({ role, setRole, sensors, mode, setMode }) {
             <span className="flex h-1 w-1 rounded-full bg-blue-500 animate-pulse ml-1"></span>
           </div>
 
-          {/* Timestamp */}
-          <div className="flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
+          {/* Timestamp — only at xl (1280px+) */}
+          <div className="hidden xl:flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5">
             <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
 
-          {/* Role Toggle */}
+          {/* Role Toggle — always visible on desktop */}
           <div className="relative">
             <div className="flex bg-zinc-900/60 rounded-full p-0.5 backdrop-blur-md border border-white/10">
               <div
@@ -575,10 +390,7 @@ function Header({ role, setRole, sensors, mode, setMode }) {
 
         {/* ── MOBILE: Status Pill + Hamburger (visible only on mobile) ── */}
         <div className="flex md:hidden items-center gap-2">
-          {/* Compact status dot */}
           <div className={`w-2 h-2 rounded-full ${danger ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></div>
-
-          {/* Hamburger */}
           <button
             onClick={() => setMobileOpen(prev => !prev)}
             className="flex items-center justify-center w-9 h-9 rounded-xl bg-zinc-900/60 border border-white/10 backdrop-blur-md transition-all duration-200 active:scale-95"
@@ -624,7 +436,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">System Status</p>
             <div className="flex items-center gap-4 flex-wrap">
-              {/* Health Gauge */}
               <div className="relative w-10 h-10">
                 <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
                   <defs>
@@ -640,8 +451,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
                   <span className="text-[10px] font-mono font-bold text-white">{animatedHealth}</span>
                 </div>
               </div>
-
-              {/* Status Pill */}
               {danger ? (
                 <div className="flex items-center gap-2 px-5 py-2 rounded-2xl bg-gradient-to-r from-red-950/80 to-zinc-950 border border-red-500/30 backdrop-blur-md">
                   <div className="relative">
@@ -663,7 +472,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Sensors</p>
             <div className="flex gap-2 flex-wrap">
-              {/* Turbidity */}
               <div className="bg-zinc-900/30 border border-white/10 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -672,7 +480,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
                 <span className="text-[9px] text-gray-400">NTU</span>
                 <span className={`text-[8px] font-mono ${trendColor}`}>{trendDirection}{Math.abs(parseFloat(trendPercent))}%</span>
               </div>
-              {/* pH */}
               <div className="bg-zinc-900/30 border border-white/10 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
