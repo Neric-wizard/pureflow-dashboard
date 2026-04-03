@@ -24,10 +24,10 @@ export default function TechnicianView({ sensors }) {
 
   // ── Maintenance Log with Countdown ──
   const maintenanceLog = [
-    { date: '2025-03-20', action: 'Carbon filter replacement', tech: 'J. Nkemelu', status: 'Completed' },
-    { date: '2025-03-18', action: 'UV lamp inspection', tech: 'A. Fongod', status: 'Completed' },
-    { date: '2025-03-15', action: 'Tank deep cleaning', tech: 'J. Nkemelu', status: 'Pending' },
-    { date: '2025-03-10', action: 'Primary sensor calibration', tech: 'A. Fongod', status: 'Overdue' },
+    { date: '2025-03-20', action: 'Carbon filter replacement', tech: 'J. Johnson', status: 'Completed' },
+    { date: '2025-03-18', action: 'UV lamp inspection', tech: 'A. James', status: 'Completed' },
+    { date: '2025-03-15', action: 'Tank deep cleaning', tech: 'J. Ramson', status: 'Pending' },
+    { date: '2025-03-10', action: 'Primary sensor calibration', tech: 'A. Smith', status: 'Overdue' },
   ]
   
   // Calculate days until next maintenance (for Pending/Overdue items)
