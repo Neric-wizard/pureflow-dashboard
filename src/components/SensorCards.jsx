@@ -55,8 +55,8 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
       {/* Glow effect on hover */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      {/* Card with better spacing */}
-      <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-5 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+      {/* Card with better spacing - Using CSS variables */}
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-5 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
         
         {/* Top accent line */}
         <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-current to-transparent opacity-50" style={{ color: status.color }} />
@@ -68,9 +68,9 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-base opacity-70">{status.icon}</span>
-            <div className="font-mono text-[10px] text-gray-400 uppercase tracking-[0.5px] cursor-help group/label" title={tooltip}>
+            <div className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.5px] cursor-help group/label" title={tooltip}>
               {label}
-              <span className="ml-1 text-gray-600 text-[8px] group-hover/label:text-gray-400 transition">(?)</span>
+              <span className="ml-1 text-[var(--text-muted)] text-[8px] group-hover/label:text-[var(--text-secondary)] transition">(?)</span>
             </div>
           </div>
           
@@ -90,7 +90,7 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
           <span className="font-mono text-3xl font-bold tracking-[-0.04em] tabular-nums leading-none transition-all duration-300" style={{ color: status.color }}>
             {typeof animatedValue === 'number' ? animatedValue.toFixed(unit === 'NTU' ? 1 : unit === '°C' ? 1 : 0) : value}
           </span>
-          {unit && <span className="font-mono text-xs text-gray-400 tracking-wide">{unit}</span>}
+          {unit && <span className="font-mono text-xs text-[var(--text-muted)] tracking-wide">{unit}</span>}
           
           {/* Live pulse dot */}
           <div className="relative flex h-2 w-2">
@@ -106,7 +106,7 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
         </span>
 
         {/* Sub-label */}
-        {sub && <p className="font-mono text-[8px] text-gray-500 mt-2 leading-relaxed">{sub}</p>}
+        {sub && <p className="font-mono text-[8px] text-[var(--text-muted)] mt-2 leading-relaxed">{sub}</p>}
       </div>
     </div>
   )

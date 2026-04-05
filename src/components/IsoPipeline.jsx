@@ -85,7 +85,8 @@ export default function IsoPipeline({ sensors }) {
     <div className="group relative">
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+      {/* Updated: Using CSS variables for theme switching */}
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
         
         <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/[0.02] via-transparent to-white/[0.01] rounded-2xl transition-transform duration-700 group-hover:translate-x-6" />
@@ -98,29 +99,29 @@ export default function IsoPipeline({ sensors }) {
                 <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-30"></div>
                 <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500 opacity-60"></div>
               </div>
-              <p className="font-mono text-[9px] text-gray-500 uppercase tracking-wider">
+              <p className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
                 Live water treatment pipeline · 12 stages
               </p>
             </div>
-            <p className="text-[8px] text-gray-600 mt-0.5 ml-4">
+            <p className="text-[8px] text-[var(--text-muted)] mt-0.5 ml-4">
               Water inlet → household supply · Confirmed flow
             </p>
           </div>
         </div>
 
         {/* Before/After Water Quality Comparison */}
-        <div className="mb-3 p-2 bg-black/20 rounded-lg border border-white/5">
+        <div className="mb-3 p-2 bg-black/20 rounded-lg border border-[var(--border)]">
           <div className="flex items-center justify-between text-[8px] font-mono">
             <div className="flex items-center gap-4">
               <div>
-                <span className="text-gray-500">Inlet:</span>
+                <span className="text-[var(--text-muted)]">Inlet:</span>
                 <span className={`ml-1 ${turbidity > 8 ? 'text-red-400' : turbidity > 4 ? 'text-amber-400' : 'text-green-400'}`}>
                   {turbidity.toFixed(1)} NTU
                 </span>
               </div>
-              <span className="text-gray-600">→</span>
+              <span className="text-[var(--text-muted)]">→</span>
               <div>
-                <span className="text-gray-500">Outlet:</span>
+                <span className="text-[var(--text-muted)]">Outlet:</span>
                 <span className={`ml-1 ${secT < 4 ? 'text-green-400' : 'text-amber-400'}`}>
                   {secT.toFixed(1)} NTU
                 </span>
@@ -129,7 +130,7 @@ export default function IsoPipeline({ sensors }) {
                 ↓ {reduction}% reduction
               </div>
             </div>
-            <div className="text-gray-600">
+            <div className="text-[var(--text-muted)]">
               {safe ? '✅ Water safe for consumption' : '⚠️ Treatment in progress'}
             </div>
           </div>
@@ -146,7 +147,7 @@ export default function IsoPipeline({ sensors }) {
           ].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-1">
               <div className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
-              <span className="font-mono text-[7px] text-gray-500">{label}</span>
+              <span className="font-mono text-[7px] text-[var(--text-muted)]">{label}</span>
             </div>
           ))}
         </div>
@@ -455,8 +456,8 @@ export default function IsoPipeline({ sensors }) {
         </div>
 
         {/* Technical Spec Ticker - Bottom Footer */}
-        <div className="mt-3 pt-2 border-t border-white/5">
-          <div className="text-[6px] font-mono text-gray-600 text-center animate-pulse">
+        <div className="mt-3 pt-2 border-t border-[var(--border)]">
+          <div className="text-[6px] font-mono text-[var(--text-muted)] text-center animate-pulse">
             🔐 ESP32 · AES-256 ENCRYPTED · 5Hz REFRESH · MQTT ACTIVE · SYSTEM HEALTH MONITORED
           </div>
         </div>

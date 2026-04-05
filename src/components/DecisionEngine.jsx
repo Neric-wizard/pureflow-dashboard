@@ -55,7 +55,8 @@ export default function DecisionEngine({ sensors }) {
       {/* Glow effect on hover */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+      {/* Updated: Using CSS variables for theme switching */}
+      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
         
         {/* Top accent line */}
         <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
@@ -70,7 +71,7 @@ export default function DecisionEngine({ sensors }) {
               <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-30"></div>
               <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500 opacity-60"></div>
             </div>
-            <h3 className="font-mono text-[10px] text-gray-500 uppercase tracking-wider">Decision engine</h3>
+            <h3 className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Decision engine</h3>
           </div>
           
           <div className="flex items-center gap-1.5 px-2 py-0.5 text-[8px] font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full">
@@ -82,56 +83,56 @@ export default function DecisionEngine({ sensors }) {
         {/* UV Mode Card */}
         <div className={`rounded-xl p-3 mb-3 transition-all duration-500 ${uvBg}`}>
           <div className="flex items-center justify-between mb-1">
-            <div className="font-mono text-[8px] text-gray-500 uppercase tracking-wider">UV mode — primary</div>
+            <div className="font-mono text-[8px] text-[var(--text-muted)] uppercase tracking-wider">UV mode — primary</div>
             {turbidity > 8 && (
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
             )}
           </div>
           <div className={`font-mono text-sm font-bold ${uvTextColor} mb-1`}>{uvMode}</div>
-          <div className="text-[9px] text-gray-400 leading-relaxed">{uvReason}</div>
+          <div className="text-[9px] text-[var(--text-secondary)] leading-relaxed">{uvReason}</div>
         </div>
 
         {/* UV Thresholds */}
-        <div className="bg-black/20 rounded-xl p-2 mb-3 border border-white/5">
-          <div className="font-mono text-[8px] text-gray-500 uppercase tracking-wider mb-2">UV thresholds</div>
+        <div className="bg-black/20 rounded-xl p-2 mb-3 border border-[var(--border)]">
+          <div className="font-mono text-[8px] text-[var(--text-muted)] uppercase tracking-wider mb-2">UV thresholds</div>
           <div className="space-y-1 text-[9px]">
-            <div className="flex justify-between"><span className="text-gray-500">&lt; 4 NTU</span><span className="font-mono text-green-400">UV OFF</span></div>
-            <div className="flex justify-between"><span className="text-gray-500">4 – 8 NTU</span><span className="font-mono text-amber-400">STANDBY</span></div>
-            <div className="flex justify-between"><span className="text-gray-500">&gt; 8 NTU</span><span className="font-mono text-red-400">FULL POWER</span></div>
-            <div className="flex justify-between pt-1 border-t border-white/10 mt-1"><span className="text-gray-500">pH out of range</span><span className="font-mono text-amber-400">FLAG</span></div>
+            <div className="flex justify-between"><span className="text-[var(--text-muted)]">&lt; 4 NTU</span><span className="font-mono text-green-400">UV OFF</span></div>
+            <div className="flex justify-between"><span className="text-[var(--text-muted)]">4 – 8 NTU</span><span className="font-mono text-amber-400">STANDBY</span></div>
+            <div className="flex justify-between"><span className="text-[var(--text-muted)]">&gt; 8 NTU</span><span className="font-mono text-red-400">FULL POWER</span></div>
+            <div className="flex justify-between pt-1 border-t border-[var(--border)] mt-1"><span className="text-[var(--text-muted)]">pH out of range</span><span className="font-mono text-amber-400">FLAG</span></div>
           </div>
         </div>
 
         {/* Output Valve Card */}
         <div className={`rounded-xl p-3 mb-3 transition-all duration-500 ${valveBg}`}>
-          <div className="font-mono text-[8px] text-gray-500 uppercase tracking-wider mb-1">Valve — final decision</div>
+          <div className="font-mono text-[8px] text-[var(--text-muted)] uppercase tracking-wider mb-1">Valve — final decision</div>
           <div className={`font-mono text-sm font-bold ${valveTextColor} mb-1`}>{valveStatus}</div>
-          <div className="text-[9px] text-gray-400 leading-relaxed">{valveReason}</div>
+          <div className="text-[9px] text-[var(--text-secondary)] leading-relaxed">{valveReason}</div>
         </div>
 
         {/* Counters Grid */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-black/20 rounded-xl p-2 border border-white/5">
-            <div className="font-mono text-[7px] text-gray-500 uppercase tracking-wider">UV cycles</div>
+          <div className="bg-black/20 rounded-xl p-2 border border-[var(--border)]">
+            <div className="font-mono text-[7px] text-[var(--text-muted)] uppercase tracking-wider">UV cycles</div>
             <div className="font-mono text-base font-bold text-blue-400">{uvCycles}</div>
           </div>
-          <div className="bg-black/20 rounded-xl p-2 border border-white/5">
-            <div className="font-mono text-[7px] text-gray-500 uppercase tracking-wider">Valve opens</div>
+          <div className="bg-black/20 rounded-xl p-2 border border-[var(--border)]">
+            <div className="font-mono text-[7px] text-[var(--text-muted)] uppercase tracking-wider">Valve opens</div>
             <div className="font-mono text-base font-bold text-green-400">{valveOpens}</div>
           </div>
-          <div className="bg-black/20 rounded-xl p-2 border border-white/5">
-            <div className="font-mono text-[7px] text-gray-500 uppercase tracking-wider">Valve closes</div>
+          <div className="bg-black/20 rounded-xl p-2 border border-[var(--border)]">
+            <div className="font-mono text-[7px] text-[var(--text-muted)] uppercase tracking-wider">Valve closes</div>
             <div className="font-mono text-base font-bold text-red-400">{valveCloses}</div>
           </div>
-          <div className="bg-black/20 rounded-xl p-2 border border-white/5">
-            <div className="font-mono text-[7px] text-gray-500 uppercase tracking-wider">Water treated</div>
+          <div className="bg-black/20 rounded-xl p-2 border border-[var(--border)]">
+            <div className="font-mono text-[7px] text-[var(--text-muted)] uppercase tracking-wider">Water treated</div>
             <div className="font-mono text-base font-bold text-green-400">1,240L</div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-3 pt-2 border-t border-white/5">
-          <div className="text-[7px] font-mono text-gray-600 leading-relaxed">
+        <div className="mt-3 pt-2 border-t border-[var(--border)]">
+          <div className="text-[7px] font-mono text-[var(--text-muted)] leading-relaxed">
             Rule-based threshold logic via ESP32. AI/ML upgrade planned for Phase 2.
           </div>
         </div>
