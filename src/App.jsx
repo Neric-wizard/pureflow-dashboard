@@ -184,6 +184,19 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           </div>
         </div>
 
+        {/* ── THEME TOGGLE - NOW VISIBLE ON ALL SCREENS (MOVED OUTSIDE hidden div) ── */}
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className={`flex items-center justify-center w-7 h-7 rounded-full border text-[11px] transition-all duration-300 ${
+            darkMode 
+              ? 'bg-zinc-900/50 border-white/10 hover:bg-zinc-800/70' 
+              : 'bg-gray-200/50 border-gray-300 hover:bg-gray-300/70'
+          }`}
+          aria-label="Toggle theme"
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
+
         {/* ── DESKTOP: Mode Toggle (hidden on mobile) ── */}
         <div className={`hidden md:flex items-center gap-2 rounded-full p-0.5 border animate-slide-up [animation-delay:50ms] ${
           darkMode 
@@ -338,19 +351,6 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
         {/* ── DESKTOP: Right Section (hidden on mobile) ── */}
         <div className="hidden md:flex items-center gap-2 animate-slide-up [animation-delay:200ms]">
-
-          {/* Theme Toggle Button */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`flex items-center justify-center w-7 h-7 rounded-full border text-[11px] transition-all duration-300 ${
-              darkMode 
-                ? 'bg-zinc-900/50 border-white/10 hover:bg-zinc-800/70' 
-                : 'bg-gray-200/50 border-gray-300 hover:bg-gray-300/70'
-            }`}
-            aria-label="Toggle theme"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
 
           {/* Live Indicator — always visible on desktop */}
           <div className="relative group">
