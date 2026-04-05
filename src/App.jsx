@@ -7,7 +7,6 @@ import DecisionEngine from './components/DecisionEngine'
 import Charts from './components/Charts'
 import TechnicianView from './components/TechnicianView'
 
-// ── Simulated sensor data ──────────────────────────
 function generateSimData() {
   return {
     turbidity:    parseFloat((8 + (Math.random() * 8 - 4)).toFixed(1)),
@@ -17,7 +16,6 @@ function generateSimData() {
   }
 }
 
-// ── Safe static values for other sensors in Connectivity mode ──
 const safeStaticData = {
   turbidity: 2.5,
   pH: 7.2,
@@ -33,7 +31,6 @@ function calcSafetyScore(d) {
   if (d.conductivity > 500)         score -= 15
   return Math.max(0, Math.min(100, score))
 }
-// ──────────────────────────────────────────────────
 
 function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }) {
   const [time, setTime] = useState(new Date())
@@ -125,8 +122,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
   return (
     <header
       className={`relative transition-colors duration-500 ${
-        darkMode 
-          ? 'bg-gradient-to-r from-gray-950 via-zinc-950 to-gray-950' 
+        darkMode
+          ? 'bg-gradient-to-r from-gray-950 via-zinc-950 to-gray-950'
           : 'bg-gradient-to-r from-gray-100 via-zinc-100 to-gray-100'
       } border-b border-white/5 backdrop-blur-2xl overflow-hidden`}
       style={{
@@ -159,37 +156,23 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
       {/* ── MAIN ROW ── */}
       <div className="px-6 py-3 flex items-center justify-between gap-3 relative z-10">
 
-        {/* Logo — always visible */}
-        <div className="flex items-center gap-3 group cursor-pointer relative animate-slide-up [animation-delay:0ms]">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-cyan-400/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-            <div className={`relative w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.4)] ${
-              darkMode 
-                ? 'bg-gradient-to-br from-zinc-900 to-gray-950 border border-white/10' 
-                : 'bg-gradient-to-br from-white to-gray-100 border border-gray-300'
-            }`}>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50"></div>
-              <svg width="20" height="20" viewBox="0 0 18 18" fill="none" className="drop-shadow-sm">
-                <path d="M9 2C9 2 3.5 8 3.5 11.5a5.5 5.5 0 0011 0C14.5 8 9 2 9 2z" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M6.5 12.5c.5 1.5 2 2 3 1.5" stroke="#06b6d4" strokeWidth="1.3" strokeLinecap="round"/>
-                <circle cx="9" cy="9" r="1" fill="#3b82f6" fillOpacity="0.6"/>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h1 className="font-sans text-lg font-semibold tracking-tight bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent group-hover:from-blue-300 group-hover:to-cyan-300 transition-all duration-300">
-              Pure<span className="text-blue-400">FLOW</span>
-            </h1>
-            <p className="text-[10px] text-gray-400 tracking-tight font-sans">SMART WATER STERILIZATION</p>
-          </div>
+        {/* ── LOGO — replaced with your PNG ── */}
+        <div className="relative group cursor-pointer flex-shrink-0 animate-slide-up [animation-delay:0ms]">
+          {/* Hover glow behind the logo */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/10 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none"></div>
+          <img
+            src="/logo.png"
+            alt="PureFLOW"
+            className="relative h-20 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+          />
         </div>
 
-        {/* ── THEME TOGGLE - NOW VISIBLE ON ALL SCREENS (MOVED OUTSIDE hidden div) ── */}
+        {/* ── THEME TOGGLE ── */}
         <button
           onClick={() => setDarkMode(!darkMode)}
-          className={`flex items-center justify-center w-7 h-7 rounded-full border text-[11px] transition-all duration-300 ${
-            darkMode 
-              ? 'bg-zinc-900/50 border-white/10 hover:bg-zinc-800/70' 
+          className={`flex items-center justify-center w-7 h-7 rounded-full border text-[11px] transition-all duration-300 flex-shrink-0 ${
+            darkMode
+              ? 'bg-zinc-900/50 border-white/10 hover:bg-zinc-800/70'
               : 'bg-gray-200/50 border-gray-300 hover:bg-gray-300/70'
           }`}
           aria-label="Toggle theme"
@@ -199,8 +182,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
         {/* ── DESKTOP: Mode Toggle (hidden on mobile) ── */}
         <div className={`hidden md:flex items-center gap-2 rounded-full p-0.5 border animate-slide-up [animation-delay:50ms] ${
-          darkMode 
-            ? 'bg-zinc-900/50 border-white/10' 
+          darkMode
+            ? 'bg-zinc-900/50 border-white/10'
             : 'bg-gray-200/50 border-gray-300'
         }`}>
           <button
@@ -276,8 +259,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
             {/* Turbidity Card */}
             <div className="group relative">
               <div className={`transition-all duration-500 hover:border-blue-500/60 hover:shadow-blue-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]' 
+                darkMode
+                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]'
                   : 'bg-white/30 border border-gray-200 shadow-[inset_0_1px_0_rgba(0,0,0,0.03),_0_4px_8px_rgba(0,0,0,0.05)]'
               }`}>
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,8 +303,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
             {/* pH Card */}
             <div className="group relative">
               <div className={`transition-all duration-500 hover:border-amber-500/60 hover:shadow-amber-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]' 
+                darkMode
+                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]'
                   : 'bg-white/30 border border-gray-200 shadow-[inset_0_1px_0_rgba(0,0,0,0.03),_0_4px_8px_rgba(0,0,0,0.05)]'
               }`}>
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,11 +335,11 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
         {/* ── DESKTOP: Right Section (hidden on mobile) ── */}
         <div className="hidden md:flex items-center gap-2 animate-slide-up [animation-delay:200ms]">
 
-          {/* Live Indicator — always visible on desktop */}
+          {/* Live Indicator */}
           <div className="relative group">
             <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm cursor-pointer ${
-              darkMode 
-                ? 'bg-zinc-900/50 border border-white/10' 
+              darkMode
+                ? 'bg-zinc-900/50 border border-white/10'
                 : 'bg-gray-200/50 border border-gray-300'
             }`}>
               <div className="relative">
@@ -377,8 +360,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Location — only at xl (1280px+) */}
           <div className={`hidden xl:flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full backdrop-blur-sm border ${
-            darkMode 
-              ? 'bg-zinc-900/30 border-white/5' 
+            darkMode
+              ? 'bg-zinc-900/30 border-white/5'
               : 'bg-gray-200/30 border-gray-200'
           }`}>
             <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -395,8 +378,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Timestamp — only at xl (1280px+) */}
           <div className={`hidden xl:flex items-center gap-1.5 font-mono text-[8px] tracking-wide px-3 py-1.5 rounded-full backdrop-blur-sm border ${
-            darkMode 
-              ? 'bg-zinc-900/30 border-white/5 text-gray-400' 
+            darkMode
+              ? 'bg-zinc-900/30 border-white/5 text-gray-400'
               : 'bg-gray-200/30 border-gray-200 text-gray-600'
           }`}>
             <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -405,11 +388,11 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
             {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
 
-          {/* Role Toggle — always visible on desktop */}
+          {/* Role Toggle */}
           <div className="relative">
             <div className={`flex rounded-full p-0.5 backdrop-blur-md border ${
-              darkMode 
-                ? 'bg-zinc-900/60 border-white/10' 
+              darkMode
+                ? 'bg-zinc-900/60 border-white/10'
                 : 'bg-gray-200/60 border-gray-300'
             }`}>
               <div
@@ -437,7 +420,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           </div>
         </div>
 
-        {/* ── MOBILE: Status Pill + Hamburger (visible only on mobile) ── */}
+        {/* ── MOBILE: Status dot + Hamburger ── */}
         <div className="flex md:hidden items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${danger ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></div>
           <button
@@ -461,17 +444,15 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
       {/* ── MOBILE DROPDOWN PANEL ── */}
       {mobileOpen && (
         <div className={`md:hidden relative z-10 border-t backdrop-blur-xl px-4 py-4 flex flex-col gap-4 ${
-          darkMode 
-            ? 'border-white/5 bg-zinc-950/90' 
+          darkMode
+            ? 'border-white/5 bg-zinc-950/90'
             : 'border-gray-200 bg-gray-100/90'
         }`}>
           {/* Mode Toggle */}
           <div>
             <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Mode</p>
             <div className={`flex items-center gap-2 rounded-full p-0.5 border w-fit ${
-              darkMode 
-                ? 'bg-zinc-900/50 border-white/10' 
-                : 'bg-gray-200/50 border-gray-300'
+              darkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-gray-200/50 border-gray-300'
             }`}>
               <button
                 className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
@@ -528,11 +509,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           <div>
             <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Sensors</p>
             <div className="flex gap-2 flex-wrap">
-              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border border-white/10' 
-                  : 'bg-white/30 border border-gray-200'
-              }`}>
+              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${darkMode ? 'bg-zinc-900/30 border border-white/10' : 'bg-white/30 border border-gray-200'}`}>
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -540,11 +517,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
                 <span className="text-[9px] text-gray-400">NTU</span>
                 <span className={`text-[8px] font-mono ${trendColor}`}>{trendDirection}{Math.abs(parseFloat(trendPercent))}%</span>
               </div>
-              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border border-white/10' 
-                  : 'bg-white/30 border border-gray-200'
-              }`}>
+              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${darkMode ? 'bg-zinc-900/30 border border-white/10' : 'bg-white/30 border border-gray-200'}`}>
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -558,22 +531,14 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           <div>
             <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Connection</p>
             <div className="flex flex-col gap-2">
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit ${
-                darkMode 
-                  ? 'bg-zinc-900/50 border border-white/10' 
-                  : 'bg-gray-200/50 border border-gray-300'
-              }`}>
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit ${darkMode ? 'bg-zinc-900/50 border border-white/10' : 'bg-gray-200/50 border border-gray-300'}`}>
                 <div className="relative">
                   <div className={`absolute inset-0 ${connectionColor} rounded-full animate-ping opacity-40`}></div>
                   <div className={`relative w-1.5 h-1.5 rounded-full ${connectionColor}`}></div>
                 </div>
                 <span className="font-mono text-[8px] font-bold text-green-400 tracking-wider">MQTT · {latency}ms · -42 dBm</span>
               </div>
-              <div className={`flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border-white/5' 
-                  : 'bg-gray-200/30 border-gray-200'
-              }`}>
+              <div className={`flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${darkMode ? 'bg-zinc-900/30 border-white/5' : 'bg-gray-200/30 border-gray-200'}`}>
                 <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -582,11 +547,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
                   <span key={loc} className={i === arr.length - 1 ? 'text-gray-300' : 'text-gray-500'}>{loc}{i < arr.length - 1 ? ' · ' : ''}</span>
                 ))}
               </div>
-              <div className={`flex items-center gap-1.5 font-mono text-[8px] tracking-wide px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${
-                darkMode 
-                  ? 'bg-zinc-900/30 border-white/5 text-gray-400' 
-                  : 'bg-gray-200/30 border-gray-200 text-gray-600'
-              }`}>
+              <div className={`flex items-center gap-1.5 font-mono text-[8px] tracking-wide px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${darkMode ? 'bg-zinc-900/30 border-white/5 text-gray-400' : 'bg-gray-200/30 border-gray-200 text-gray-600'}`}>
                 <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -599,11 +560,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           <div>
             <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Role</p>
             <div className="relative w-fit">
-              <div className={`flex rounded-full p-0.5 backdrop-blur-md border ${
-                darkMode 
-                  ? 'bg-zinc-900/60 border-white/10' 
-                  : 'bg-gray-200/60 border-gray-300'
-              }`}>
+              <div className={`flex rounded-full p-0.5 backdrop-blur-md border ${darkMode ? 'bg-zinc-900/60 border-white/10' : 'bg-gray-200/60 border-gray-300'}`}>
                 <div
                   className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300 ease-out shadow-lg shadow-blue-500/25"
                   style={{ transform: `translateX(${togglePosition === 0 ? '0%' : '100%'})`, width: 'calc(50% - 2px)' }}
@@ -638,12 +595,12 @@ export default function App() {
   const [role, setRole] = useState('household')
   const [mode, setMode] = useState('demo')
   const [darkMode, setDarkMode] = useState(true)
-  
+
   const [simSensors, setSimSensors] = useState(generateSimData())
   const [fbTurbidity, setFbTurbidity] = useState(5.0)
-  
-  const sensors = mode === 'demo' 
-    ? simSensors 
+
+  const sensors = mode === 'demo'
+    ? simSensors
     : {
         turbidity: fbTurbidity,
         pH: safeStaticData.pH,
@@ -651,7 +608,6 @@ export default function App() {
         conductivity: safeStaticData.conductivity,
       }
 
-  // Apply dark mode to body via className
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark')
@@ -662,9 +618,7 @@ export default function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (mode === 'demo') {
-        setSimSensors(generateSimData())
-      }
+      if (mode === 'demo') setSimSensors(generateSimData())
     }, 5000)
     return () => clearInterval(interval)
   }, [mode])
@@ -684,11 +638,11 @@ export default function App() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-950' : 'bg-gray-100'}`}>
-      <Header 
-        role={role} 
-        setRole={setRole} 
-        sensors={sensors} 
-        mode={mode} 
+      <Header
+        role={role}
+        setRole={setRole}
+        sensors={sensors}
+        mode={mode}
         setMode={setMode}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
@@ -696,13 +650,11 @@ export default function App() {
       <main className="p-4 flex flex-col gap-3">
         <SafetyGauge score={safetyScore} />
         <SensorCards sensors={sensors} />
-
         <div className="grid grid-cols-1 lg:grid-cols-[185px_1fr_208px] gap-3">
           <SystemStatus sensors={sensors} />
           <IsoPipeline sensors={sensors} />
           <DecisionEngine sensors={sensors} />
         </div>
-
         <Charts sensors={sensors} />
         {role === 'technician' && <TechnicianView sensors={sensors} />}
       </main>
