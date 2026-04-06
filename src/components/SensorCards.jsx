@@ -1,4 +1,4 @@
-// src/components/SensorCards.jsx
+// src/components/SensorCards.jsx 
 import { useState, useEffect } from 'react'
 
 function turbidityStatus(v) {
