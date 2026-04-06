@@ -2,3 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Grain texture overlay for premium dark mode feel */
+.dark::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-radial-gradient(circle at 20% 30%, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 1px, transparent 1px, transparent 8px);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Global card hover glow */
+.bg-\[var\(--bg-card\)\] {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bg-\[var\(--bg-card\)\]:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+}
