@@ -32,7 +32,7 @@ function calcSafetyScore(d) {
   return Math.max(0, Math.min(100, score))
 }
 
-function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }) {
+function Header({ role, setRole, sensors, mode, setMode }) {
   const [time, setTime] = useState(new Date())
   const [prevHealthScore, setPrevHealthScore] = useState(100)
   const [animatedHealth, setAnimatedHealth] = useState(100)
@@ -121,11 +121,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
   return (
     <header
-      className={`relative transition-colors duration-500 ${
-        darkMode
-          ? 'bg-gradient-to-r from-gray-950 via-zinc-950 to-gray-950'
-          : 'bg-gradient-to-r from-gray-100 via-zinc-100 to-gray-100'
-      } border-b border-white/5 backdrop-blur-2xl overflow-hidden`}
+      className="relative bg-gradient-to-r from-gray-950 via-zinc-950 to-gray-950 border-b border-white/5 backdrop-blur-2xl overflow-hidden transition-colors duration-500"
       style={{
         backgroundImage: `radial-gradient(circle at 20% 50%, rgba(59,130,246,${meshIntensity}), transparent 50%), radial-gradient(circle at 80% 80%, rgba(6,182,212,${meshIntensity}), transparent 50%)`
       }}
@@ -156,9 +152,8 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
       {/* ── MAIN ROW ── */}
       <div className="px-6 py-3 flex items-center justify-between gap-3 relative z-10">
 
-        {/* ── LOGO — replaced with your PNG ── */}
+        {/* ── LOGO ── */}
         <div className="relative group cursor-pointer flex-shrink-0 animate-slide-up [animation-delay:0ms]">
-          {/* Hover glow behind the logo */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/10 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none"></div>
           <img
             src="/logo.png"
@@ -167,33 +162,16 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           />
         </div>
 
-        {/* ── THEME TOGGLE ── */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className={`flex items-center justify-center w-7 h-7 rounded-full border text-[11px] transition-all duration-300 flex-shrink-0 ${
-            darkMode
-              ? 'bg-zinc-900/50 border-white/10 hover:bg-zinc-800/70'
-              : 'bg-gray-200/50 border-gray-300 hover:bg-gray-300/70'
-          }`}
-          aria-label="Toggle theme"
-        >
-          {darkMode ? '☀️' : '🌙'}
-        </button>
-
         {/* ── DESKTOP: Mode Toggle (hidden on mobile) ── */}
-        <div className={`hidden md:flex items-center gap-2 rounded-full p-0.5 border animate-slide-up [animation-delay:50ms] ${
-          darkMode
-            ? 'bg-zinc-900/50 border-white/10'
-            : 'bg-gray-200/50 border-gray-300'
-        }`}>
+        <div className="hidden md:flex items-center gap-2 rounded-full p-0.5 border bg-zinc-900/50 border-white/10 animate-slide-up [animation-delay:50ms]">
           <button
-            className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+            className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white'}`}
             onClick={() => setMode('demo')}
           >
             🎮 Demo Mode
           </button>
           <button
-            className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'connect' ? 'bg-green-500 text-white shadow-lg shadow-green-500/25' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+            className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'connect' ? 'bg-green-500 text-white shadow-lg shadow-green-500/25' : 'text-gray-400 hover:text-white'}`}
             onClick={() => setMode('connect')}
           >
             🔌 Connectivity Test
@@ -258,11 +236,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           <div className="flex gap-2">
             {/* Turbidity Card */}
             <div className="group relative">
-              <div className={`transition-all duration-500 hover:border-blue-500/60 hover:shadow-blue-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode
-                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]'
-                  : 'bg-white/30 border border-gray-200 shadow-[inset_0_1px_0_rgba(0,0,0,0.03),_0_4px_8px_rgba(0,0,0,0.05)]'
-              }`}>
+              <div className="transition-all duration-500 hover:border-blue-500/60 hover:shadow-blue-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -302,11 +276,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
             {/* pH Card */}
             <div className="group relative">
-              <div className={`transition-all duration-500 hover:border-amber-500/60 hover:shadow-amber-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${
-                darkMode
-                  ? 'bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]'
-                  : 'bg-white/30 border border-gray-200 shadow-[inset_0_1px_0_rgba(0,0,0,0.03),_0_4px_8px_rgba(0,0,0,0.05)]'
-              }`}>
+              <div className="transition-all duration-500 hover:border-amber-500/60 hover:shadow-amber-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]">
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -337,11 +307,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Live Indicator */}
           <div className="relative group">
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm cursor-pointer ${
-              darkMode
-                ? 'bg-zinc-900/50 border border-white/10'
-                : 'bg-gray-200/50 border border-gray-300'
-            }`}>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-white/10 backdrop-blur-sm cursor-pointer">
               <div className="relative">
                 <div className={`absolute inset-0 ${connectionColor} rounded-full animate-ping opacity-40`}></div>
                 <div className={`relative w-1.5 h-1.5 rounded-full ${connectionColor}`}></div>
@@ -359,11 +325,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           </div>
 
           {/* Location — only at xl (1280px+) */}
-          <div className={`hidden xl:flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full backdrop-blur-sm border ${
-            darkMode
-              ? 'bg-zinc-900/30 border-white/5'
-              : 'bg-gray-200/30 border-gray-200'
-          }`}>
+          <div className="hidden xl:flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full bg-zinc-900/30 border-white/5">
             <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -377,11 +339,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
           </div>
 
           {/* Timestamp — only at xl (1280px+) */}
-          <div className={`hidden xl:flex items-center gap-1.5 font-mono text-[8px] tracking-wide px-3 py-1.5 rounded-full backdrop-blur-sm border ${
-            darkMode
-              ? 'bg-zinc-900/30 border-white/5 text-gray-400'
-              : 'bg-gray-200/30 border-gray-200 text-gray-600'
-          }`}>
+          <div className="hidden xl:flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full border-white/5">
             <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -390,23 +348,19 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Role Toggle */}
           <div className="relative">
-            <div className={`flex rounded-full p-0.5 backdrop-blur-md border ${
-              darkMode
-                ? 'bg-zinc-900/60 border-white/10'
-                : 'bg-gray-200/60 border-gray-300'
-            }`}>
+            <div className="flex bg-zinc-900/60 rounded-full p-0.5 backdrop-blur-md border border-white/10">
               <div
                 className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300 ease-out shadow-lg shadow-blue-500/25"
                 style={{ transform: `translateX(${togglePosition === 0 ? '0%' : '100%'})`, width: 'calc(50% - 2px)' }}
               ></div>
               <button
-                className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'household' ? 'text-white' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'household' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                 onClick={() => setRole('household')}
               >
                 Household
               </button>
               <button
-                className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'technician' ? 'text-white' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'technician' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                 onClick={() => setRole('technician')}
               >
                 Technician
@@ -443,25 +397,19 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
       {/* ── MOBILE DROPDOWN PANEL ── */}
       {mobileOpen && (
-        <div className={`md:hidden relative z-10 border-t backdrop-blur-xl px-4 py-4 flex flex-col gap-4 ${
-          darkMode
-            ? 'border-white/5 bg-zinc-950/90'
-            : 'border-gray-200 bg-gray-100/90'
-        }`}>
+        <div className="md:hidden relative z-10 border-t border-white/5 bg-zinc-950/90 backdrop-blur-xl px-4 py-4 flex flex-col gap-4">
           {/* Mode Toggle */}
           <div>
-            <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Mode</p>
-            <div className={`flex items-center gap-2 rounded-full p-0.5 border w-fit ${
-              darkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-gray-200/50 border-gray-300'
-            }`}>
+            <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Mode</p>
+            <div className="flex items-center gap-2 bg-zinc-900/50 rounded-full p-0.5 border border-white/10 w-fit">
               <button
-                className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'demo' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white'}`}
                 onClick={() => setMode('demo')}
               >
                 🎮 Demo
               </button>
               <button
-                className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'connect' ? 'bg-green-500 text-white shadow-lg shadow-green-500/25' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                className={`px-3 py-1 rounded-full text-[10px] font-medium transition-all duration-300 ${mode === 'connect' ? 'bg-green-500 text-white shadow-lg shadow-green-500/25' : 'text-gray-400 hover:text-white'}`}
                 onClick={() => setMode('connect')}
               >
                 🔌 Test
@@ -471,7 +419,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Health + Status */}
           <div>
-            <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>System Status</p>
+            <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">System Status</p>
             <div className="flex items-center gap-4 flex-wrap">
               <div className="relative w-10 h-10">
                 <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
@@ -507,9 +455,9 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Sensor Cards */}
           <div>
-            <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Sensors</p>
+            <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Sensors</p>
             <div className="flex gap-2 flex-wrap">
-              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${darkMode ? 'bg-zinc-900/30 border border-white/10' : 'bg-white/30 border border-gray-200'}`}>
+              <div className="bg-zinc-900/30 border border-white/10 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -517,7 +465,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
                 <span className="text-[9px] text-gray-400">NTU</span>
                 <span className={`text-[8px] font-mono ${trendColor}`}>{trendDirection}{Math.abs(parseFloat(trendPercent))}%</span>
               </div>
-              <div className={`px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 ${darkMode ? 'bg-zinc-900/30 border border-white/10' : 'bg-white/30 border border-gray-200'}`}>
+              <div className="bg-zinc-900/30 border border-white/10 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2">
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
@@ -529,16 +477,16 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Connection + Location + Time */}
           <div>
-            <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Connection</p>
+            <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Connection</p>
             <div className="flex flex-col gap-2">
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm w-fit ${darkMode ? 'bg-zinc-900/50 border border-white/10' : 'bg-gray-200/50 border border-gray-300'}`}>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-white/10 backdrop-blur-sm w-fit">
                 <div className="relative">
                   <div className={`absolute inset-0 ${connectionColor} rounded-full animate-ping opacity-40`}></div>
                   <div className={`relative w-1.5 h-1.5 rounded-full ${connectionColor}`}></div>
                 </div>
                 <span className="font-mono text-[8px] font-bold text-green-400 tracking-wider">MQTT · {latency}ms · -42 dBm</span>
               </div>
-              <div className={`flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${darkMode ? 'bg-zinc-900/30 border-white/5' : 'bg-gray-200/30 border-gray-200'}`}>
+              <div className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5 w-fit">
                 <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -547,7 +495,7 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
                   <span key={loc} className={i === arr.length - 1 ? 'text-gray-300' : 'text-gray-500'}>{loc}{i < arr.length - 1 ? ' · ' : ''}</span>
                 ))}
               </div>
-              <div className={`flex items-center gap-1.5 font-mono text-[8px] tracking-wide px-3 py-1.5 rounded-full backdrop-blur-sm border w-fit ${darkMode ? 'bg-zinc-900/30 border-white/5 text-gray-400' : 'bg-gray-200/30 border-gray-200 text-gray-600'}`}>
+              <div className="flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/5 w-fit">
                 <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -558,21 +506,21 @@ function Header({ role, setRole, sensors, mode, setMode, darkMode, setDarkMode }
 
           {/* Role Toggle */}
           <div>
-            <p className={`text-[9px] font-mono uppercase tracking-widest mb-1.5 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>Role</p>
+            <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Role</p>
             <div className="relative w-fit">
-              <div className={`flex rounded-full p-0.5 backdrop-blur-md border ${darkMode ? 'bg-zinc-900/60 border-white/10' : 'bg-gray-200/60 border-gray-300'}`}>
+              <div className="flex bg-zinc-900/60 rounded-full p-0.5 backdrop-blur-md border border-white/10">
                 <div
                   className="absolute top-0.5 bottom-0.5 w-[calc(50%-2px)] bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300 ease-out shadow-lg shadow-blue-500/25"
                   style={{ transform: `translateX(${togglePosition === 0 ? '0%' : '100%'})`, width: 'calc(50% - 2px)' }}
                 ></div>
                 <button
-                  className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'household' ? 'text-white' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'household' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                   onClick={() => setRole('household')}
                 >
                   Household
                 </button>
                 <button
-                  className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'technician' ? 'text-white' : darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`relative z-10 px-4 py-1.5 rounded-full text-[10px] font-medium transition-all duration-300 ${role === 'technician' ? 'text-white' : 'text-gray-400 hover:text-white'}`}
                   onClick={() => setRole('technician')}
                 >
                   Technician
@@ -609,14 +557,6 @@ export default function App() {
       }
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [darkMode])
-
-  useEffect(() => {
     const interval = setInterval(() => {
       if (mode === 'demo') setSimSensors(generateSimData())
     }, 5000)
@@ -637,15 +577,13 @@ export default function App() {
   const safetyScore = calcSafetyScore(sensors)
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-950' : 'bg-gray-100'}`}>
+    <div className="min-h-screen bg-gray-950">
       <Header
         role={role}
         setRole={setRole}
         sensors={sensors}
         mode={mode}
         setMode={setMode}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
       />
       <main className="p-4 flex flex-col gap-3">
         <SafetyGauge score={safetyScore} />

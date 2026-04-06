@@ -36,8 +36,7 @@ export default function SystemStatus({ sensors }) {
       
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      {/* Updated: Using CSS variables for theme switching */}
-      <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+      <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
         
         <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
         
@@ -49,7 +48,7 @@ export default function SystemStatus({ sensors }) {
               <div className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-30"></div>
               <div className="relative inline-flex h-2 w-2 rounded-full bg-blue-500 opacity-60"></div>
             </div>
-            <h3 className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">System status</h3>
+            <h3 className="font-mono text-[10px] text-gray-500 uppercase tracking-wider">System status</h3>
           </div>
           
           <div className="flex items-center gap-1.5 px-2 py-0.5 text-[8px] font-mono bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full">
@@ -63,23 +62,23 @@ export default function SystemStatus({ sensors }) {
             <div key={item.label} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm opacity-70">{item.icon}</span>
-                <span className="text-[11px] text-[var(--text-secondary)]">{item.label}</span>
+                <span className="text-[11px] text-gray-400">{item.label}</span>
               </div>
               <span className={`font-mono text-[10px] font-semibold ${item.valueColor}`}>{item.value}</span>
             </div>
           ))}
 
           <div className="mt-2">
-            <div className="flex justify-between text-[8px] font-mono text-[var(--text-muted)] mb-1">
+            <div className="flex justify-between text-[8px] font-mono text-gray-500 mb-1">
               <span>Filter life</span>
               <span className="tabular-nums" style={{ color: carbonColor }}>{carbonLife}%</span>
             </div>
-            <div className="h-1.5 bg-[var(--bg-surface2)] rounded-full overflow-hidden">
+            <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
               <div className="h-full rounded-full transition-all duration-500" style={{ width: `${carbonLife}%`, backgroundColor: carbonColor }}></div>
             </div>
           </div>
 
-          <div className="border-t border-[var(--border)] my-2"></div>
+          <div className="border-t border-white/5 my-2"></div>
 
           {/* UV Sterilizer Block */}
           <div className={`relative rounded-xl p-2.5 transition-all duration-500 ${uvBg}`}>
@@ -90,8 +89,8 @@ export default function SystemStatus({ sensors }) {
               <div className="flex items-center gap-2">
                 <span className="text-base flex-shrink-0">☀️</span>
                 <div>
-                  <div className="text-[10px] font-medium text-[var(--text-primary)]">UV Sterilizer</div>
-                  <div className="text-[7px] text-[var(--text-muted)]">Ultraviolet disinfection</div>
+                  <div className="text-[10px] font-medium text-gray-300">UV Sterilizer</div>
+                  <div className="text-[7px] text-gray-500">Ultraviolet disinfection</div>
                 </div>
               </div>
               <span className={`font-mono text-[10px] font-bold tracking-wider ${uvTextColor} flex-shrink-0 text-right`}>
@@ -101,7 +100,7 @@ export default function SystemStatus({ sensors }) {
           </div>
 
           {/* Output Valve Block */}
-          <div className={`relative rounded-xl p-2.5 transition-all duration-500 ${!safe ? 'bg-red-500/5 border border-red-500/20' : 'bg-[var(--bg-surface)] border border-[var(--border)]'}`}>
+          <div className={`relative rounded-xl p-2.5 transition-all duration-500 ${!safe ? 'bg-red-500/5 border border-red-500/20' : 'bg-zinc-900/60 border border-white/10'}`}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 {safe ? (
@@ -115,20 +114,20 @@ export default function SystemStatus({ sensors }) {
                   </svg>
                 )}
                 <div>
-                  <div className="text-[10px] font-medium text-[var(--text-primary)]">Output Valve</div>
-                  <div className="text-[7px] text-[var(--text-muted)]">Safety interlock</div>
+                  <div className="text-[10px] font-medium text-gray-300">Output Valve</div>
+                  <div className="text-[7px] text-gray-500">Safety interlock</div>
                 </div>
               </div>
               <div className="text-right flex-shrink-0">
                 <span className={`font-mono text-[10px] font-bold tracking-wider ${valveTextColor} whitespace-nowrap`}>{valveStatus}</span>
-                <div className="text-[7px] font-mono text-[var(--text-muted)] max-w-[100px] truncate">{valveReason}</div>
+                <div className="text-[7px] font-mono text-gray-500 max-w-[100px] truncate">{valveReason}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-3 pt-2 border-t border-[var(--border)]">
-          <div className="flex flex-wrap justify-between gap-1 text-[6px] font-mono text-[var(--text-muted)]">
+        <div className="mt-3 pt-2 border-t border-white/5">
+          <div className="flex flex-wrap justify-between gap-1 text-[6px] font-mono text-gray-600">
             <span>LAST UPDATED • JUST NOW</span>
             <span>AES-256 ENCRYPTED</span>
           </div>

@@ -9,11 +9,11 @@ function CustomTooltip({ active, payload, label, unit, safeMin, safeMax }) {
   const val = payload[0].value
   const isSafe = safeMin != null && safeMax != null ? val >= safeMin && val <= safeMax : val < 4
   return (
-    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl px-3 py-2 backdrop-blur-md shadow-xl">
-      <div className="font-mono text-[9px] text-[var(--text-muted)] mb-1">{label}</div>
+    <div className="bg-zinc-900/95 border border-white/10 rounded-xl px-3 py-2 backdrop-blur-md shadow-xl">
+      <div className="font-mono text-[9px] text-gray-400 mb-1">{label}</div>
       <div className={`font-mono text-sm font-bold ${isSafe ? 'text-green-400' : val < (safeMin ?? 4) ? 'text-amber-400' : 'text-red-400'}`}>
         {typeof val === 'number' ? val.toFixed(1) : val}
-        <span className="text-xs font-normal text-[var(--text-muted)] ml-1">{unit}</span>
+        <span className="text-xs font-normal text-gray-500 ml-1">{unit}</span>
       </div>
       <div className={`font-mono text-[8px] mt-0.5 ${isSafe ? 'text-green-600' : 'text-red-500'}`}>
         {isSafe ? '● within safe range' : '● outside safe range'}
@@ -108,15 +108,14 @@ export default function Charts({ sensors }) {
       {/* Turbidity Chart */}
       <div className="group relative">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-        {/* Updated: Using CSS variables for theme switching */}
-        <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+        <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
           
           <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
           
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-widest">Turbidity trend</p>
-              <p className="font-mono text-[7px] text-[var(--text-muted)] mt-0.5">Last 24 hours · NTU</p>
+              <p className="font-mono text-[9px] text-gray-500 uppercase tracking-widest">Turbidity trend</p>
+              <p className="font-mono text-[7px] text-gray-600 mt-0.5">Last 24 hours · NTU</p>
             </div>
             <div className="flex items-center gap-2">
               <span className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded-full ${turbBadge.cls}`}>
@@ -131,10 +130,10 @@ export default function Charts({ sensors }) {
           </div>
 
           {/* Period Stats Bar */}
-          <div className="flex justify-between gap-2 mb-3 text-[8px] font-mono text-[var(--text-muted)] bg-black/20 rounded-lg px-2 py-1.5">
+          <div className="flex justify-between gap-2 mb-3 text-[8px] font-mono text-gray-500 bg-black/20 rounded-lg px-2 py-1.5">
             <span>Min: <span className="text-blue-300">{turbMin}</span></span>
             <span>Max: <span className={turbMaxValue > 8 ? 'text-red-400' : 'text-blue-300'}>{turbMax}</span></span>
-            <span>Avg: <span className="text-[var(--text-primary)]">{turbAvg}</span></span>
+            <span>Avg: <span className="text-gray-300">{turbAvg}</span></span>
           </div>
 
           <ResponsiveContainer width="100%" height={140}>
@@ -160,7 +159,7 @@ export default function Charts({ sensors }) {
 
           <div className="flex gap-3 mt-2 flex-wrap">
             {[{ color: '#22c55e', label: '< 4 NTU safe' }, { color: '#f59e0b', label: '4–8 standby' }, { color: '#ef4444', label: '> 8 danger' }].map(({ color, label }) => (
-              <div key={label} className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full" style={{ background: color }}/><span className="font-mono text-[7px] text-[var(--text-muted)]">{label}</span></div>
+              <div key={label} className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full" style={{ background: color }}/><span className="font-mono text-[7px] text-gray-600">{label}</span></div>
             ))}
           </div>
         </div>
@@ -169,15 +168,14 @@ export default function Charts({ sensors }) {
       {/* pH Chart */}
       <div className="group relative">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/20 to-orange-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-        {/* Updated: Using CSS variables for theme switching */}
-        <div className="relative bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl p-4 shadow-[0_0_30px_rgba(245,158,11,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
+        <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_rgba(245,158,11,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
           
           <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-amber-500 to-transparent opacity-50" />
           
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-widest">pH level trend</p>
-              <p className="font-mono text-[7px] text-[var(--text-muted)] mt-0.5">Last 24 hours · Safe range: 6.5 – 8.5</p>
+              <p className="font-mono text-[9px] text-gray-500 uppercase tracking-widest">pH level trend</p>
+              <p className="font-mono text-[7px] text-gray-600 mt-0.5">Last 24 hours · Safe range: 6.5 – 8.5</p>
             </div>
             <div className="flex items-center gap-2">
               <span className={`font-mono text-[9px] font-bold px-2 py-0.5 rounded-full ${phBadge.cls}`}>
@@ -192,10 +190,10 @@ export default function Charts({ sensors }) {
           </div>
 
           {/* Period Stats Bar */}
-          <div className="flex justify-between gap-2 mb-3 text-[8px] font-mono text-[var(--text-muted)] bg-black/20 rounded-lg px-2 py-1.5">
+          <div className="flex justify-between gap-2 mb-3 text-[8px] font-mono text-gray-500 bg-black/20 rounded-lg px-2 py-1.5">
             <span>Min: <span className="text-amber-300">{phMin}</span></span>
             <span>Max: <span className={isPhDanger ? 'text-red-400' : 'text-amber-300'}>{phMax}</span></span>
-            <span>Avg: <span className="text-[var(--text-primary)]">{phAvg}</span></span>
+            <span>Avg: <span className="text-gray-300">{phAvg}</span></span>
           </div>
 
           <ResponsiveContainer width="100%" height={140}>
@@ -221,9 +219,9 @@ export default function Charts({ sensors }) {
 
           <div className="flex gap-3 mt-2 flex-wrap">
             {[{ color: '#22c55e', label: 'Safe zone (6.5–8.5)' }, { color: '#f59e0b', label: 'Out of range' }].map(({ color, label }) => (
-              <div key={label} className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full" style={{ background: color }}/><span className="font-mono text-[7px] text-[var(--text-muted)]">{label}</span></div>
+              <div key={label} className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full" style={{ background: color }}/><span className="font-mono text-[7px] text-gray-600">{label}</span></div>
             ))}
-            <div className="flex items-center gap-1"><div className="w-3 h-1.5 rounded" style={{ background: 'rgba(34,197,94,0.2)' }}/><span className="font-mono text-[7px] text-[var(--text-muted)]">shaded = safe</span></div>
+            <div className="flex items-center gap-1"><div className="w-3 h-1.5 rounded" style={{ background: 'rgba(34,197,94,0.2)' }}/><span className="font-mono text-[7px] text-gray-600">shaded = safe</span></div>
           </div>
         </div>
       </div>
