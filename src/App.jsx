@@ -142,25 +142,14 @@ function Header({ role, setRole, sensors, mode, setMode, autoRefresh, setAutoRef
 
       <div className="px-6 py-3 flex items-center justify-between gap-3 relative z-10">
 
-        {/* Logo */}
-        <div className="flex items-center gap-3 group cursor-pointer relative animate-slide-up [animation-delay:0ms]">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-cyan-400/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-            <div className="relative w-10 h-10 bg-gradient-to-br from-zinc-900 to-gray-950 border border-white/10 rounded-2xl flex items-center justify-center overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.4)]">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50"></div>
-              <svg width="20" height="20" viewBox="0 0 18 18" fill="none" className="drop-shadow-sm">
-                <path d="M9 2C9 2 3.5 8 3.5 11.5a5.5 5.5 0 0011 0C14.5 8 9 2 9 2z" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M6.5 12.5c.5 1.5 2 2 3 1.5" stroke="#06b6d4" strokeWidth="1.3" strokeLinecap="round"/>
-                <circle cx="9" cy="9" r="1" fill="#3b82f6" fillOpacity="0.6"/>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <h1 className="font-sans text-lg font-semibold tracking-tight bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent group-hover:from-blue-300 group-hover:to-cyan-300 transition-all duration-300">
-              Pure<span className="text-blue-400">FLOW</span>
-            </h1>
-            <p className="text-[10px] text-gray-400 tracking-tight font-sans">SMART WATER STERILIZATION</p>
-          </div>
+        {/* Logo - Image Logo */}
+        <div className="relative group cursor-pointer flex-shrink-0 animate-slide-up [animation-delay:0ms]">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/10 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none"></div>
+          <img
+            src="/logo.png"
+            alt="PureFLOW"
+            className="relative h-20 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
+          />
         </div>
 
         {/* ── AUTO-REFRESH TOGGLE BUTTON ── */}
@@ -550,7 +539,7 @@ export default function App() {
       if (mode === 'demo') {
         setSimSensors(generateSimData())
       }
-    }, 5000)
+    }, 8000)
     return () => clearInterval(interval)
   }, [mode, autoRefresh])
 
@@ -562,7 +551,7 @@ export default function App() {
         setFbTurbidity(Math.max(1, Math.min(15, newTurbidity)))
         console.log('📡 ESP32 → Firebase → Turbidity:', newTurbidity.toFixed(1), 'NTU')
       }
-    }, 5000)
+    }, 8000)
     return () => clearInterval(interval)
   }, [mode])
 
