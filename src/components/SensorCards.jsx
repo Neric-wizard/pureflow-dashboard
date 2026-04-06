@@ -1,4 +1,4 @@
-// src/components/SensorCards.jsx 
+// src/components/SensorCards.jsx
 import { useState, useEffect } from 'react'
 
 function turbidityStatus(v) {
@@ -7,14 +7,34 @@ function turbidityStatus(v) {
   return       { label: '▼ Safe',    cls: 'bg-green-500/20 text-green-400', color: '#22c55e', icon: '💧' }
 }
 
+function turbidityMessage(v) {
+  if (v > 8) return '⚠️ High turbidity — UV activated'
+  if (v > 4) return '📊 Moderate turbidity — monitoring'
+  return '✅ Water clear — UV off'
+}
+
 function pHStatus(v) {
   if (v < 6.0 || v > 9.0) return { label: '▲ Critical', cls: 'bg-red-500/20 text-red-400', color: '#ef4444', icon: '🧪' }
   if (v < 6.5 || v > 8.5) return { label: '▲ Warning',  cls: 'bg-amber-500/20 text-amber-400', color: '#eab308', icon: '🧪' }
   return                    { label: '▼ Safe',     cls: 'bg-green-500/20 text-green-400', color: '#22c55e', icon: '🧪' }
 }
 
+function pHMessage(v) {
+  if (v < 6.0) return '⚠️ pH critically low — acidic water'
+  if (v > 9.0) return '⚠️ pH critically high — alkaline water'
+  if (v < 6.5) return '📊 pH low — adjust recommended'
+  if (v > 8.5) return '📊 pH high — adjust recommended'
+  return '✅ pH optimal — within safe range'
+}
+
 function tempStatus() {
   return { label: '● Normal', cls: 'bg-blue-500/20 text-blue-400', color: '#3b82f6', icon: '🌡️' }
+}
+
+function tempMessage(v) {
+  if (v > 35) return '⚠️ High temperature — bacteria risk elevated'
+  if (v < 20) return '📊 Low temperature — treatment efficiency may decrease'
+  return '✅ Temperature optimal'
 }
 
 function conductivityStatus(v) {
@@ -24,11 +44,17 @@ function conductivityStatus(v) {
   return        { label: '▼ Normal', cls: 'bg-green-500/20 text-green-400', color: '#22c55e', icon: '⚡' }
 }
 
-function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValue }) {
+function conductivityMessage(v) {
+  if (v > 500) return '⚠️ High conductivity — high mineral content'
+  if (v > 400) return '📊 Elevated conductivity — monitor'
+  if (v < 50)  return '📊 Low conductivity — very pure water'
+  return '✅ Conductivity normal'
+}
+
+function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValue, dynamicMessage }) {
   const [animatedValue, setAnimatedValue] = useState(0)
   const [prevValue, setPrevValue] = useState(0)
 
-  // Animate value changes
   useEffect(() => {
     const numValue = parseFloat(value)
     setPrevValue(animatedValue)
@@ -52,19 +78,14 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
 
   return (
     <div className="group relative">
-      {/* Glow effect on hover */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-cyan-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
       
-      {/* Card with better spacing */}
       <div className="relative bg-gradient-to-br from-zinc-900/80 to-gray-950/80 border border-white/10 rounded-2xl p-5 shadow-[0_0_30px_rgba(59,130,246,0.05),inset_0_1px_0_rgba(255,255,255,0.03)] backdrop-blur-xl overflow-hidden">
         
-        {/* Top accent line */}
         <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-current to-transparent opacity-50" style={{ color: status.color }} />
         
-        {/* Glass reflection overlay */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-white/[0.02] via-transparent to-white/[0.01] rounded-2xl transition-transform duration-700 group-hover:translate-x-6" />
 
-        {/* Label with icon */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-base opacity-70">{status.icon}</span>
@@ -74,7 +95,6 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
             </div>
           </div>
           
-          {/* Trend badge */}
           {trend !== null && (
             <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-mono font-medium transition-all
               ${trend > 0 ? 'text-emerald-400 bg-emerald-500/10' : 
@@ -85,28 +105,29 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
           )}
         </div>
 
-        {/* Value with live pulse dot */}
         <div className="flex items-center gap-2 mb-3">
           <span className="font-mono text-3xl font-bold tracking-[-0.04em] tabular-nums leading-none transition-all duration-300" style={{ color: status.color }}>
             {typeof animatedValue === 'number' ? animatedValue.toFixed(unit === 'NTU' ? 1 : unit === '°C' ? 1 : 0) : value}
           </span>
           {unit && <span className="font-mono text-xs text-gray-400 tracking-wide">{unit}</span>}
           
-          {/* Live pulse dot */}
           <div className="relative flex h-2 w-2">
             <div className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-30`} style={{ backgroundColor: status.color }}></div>
             <div className={`relative inline-flex h-2 w-2 rounded-full opacity-60`} style={{ backgroundColor: status.color }}></div>
           </div>
         </div>
 
-        {/* Status badge */}
         <span className={`inline-flex items-center gap-1.5 font-mono text-[9px] font-semibold px-3 py-1 rounded-full border ${status.cls.replace('bg-', 'border-')} border-opacity-30 shadow-sm`}>
           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: status.color }} />
           {status.label}
         </span>
 
-        {/* Sub-label */}
-        {sub && <p className="font-mono text-[8px] text-gray-500 mt-2 leading-relaxed">{sub}</p>}
+        {/* Dynamic Message */}
+        <p className="font-mono text-[9px] text-gray-400 mt-3 leading-relaxed border-t border-white/10 pt-2">
+          {dynamicMessage}
+        </p>
+
+        {sub && <p className="font-mono text-[7px] text-gray-600 mt-1">{sub}</p>}
       </div>
     </div>
   )
@@ -115,11 +136,18 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
 export default function SensorCards({ sensors }) {
   const { turbidity, pH, temperature, conductivity } = sensors
 
-  // Simulate previous values for trend
-  const previousTurbidity = 10.5
-  const previouspH = 6.8
-  const turbidityTrend = ((turbidity - previousTurbidity) / previousTurbidity) * 100
-  const pHTrend = ((pH - previouspH) / previouspH) * 100
+  // Calculate trend based on current vs previous (simulated)
+  // For simplicity, we'll use a rolling effect — pH will update every time sensors change
+  const [prevTurbidity, setPrevTurbidity] = useState(turbidity)
+  const [prevPH, setPrevPH] = useState(pH)
+
+  useEffect(() => {
+    setPrevTurbidity(turbidity)
+    setPrevPH(pH)
+  }, [turbidity, pH])
+
+  const turbidityTrend = ((turbidity - prevTurbidity) / (prevTurbidity || 1)) * 100
+  const pHTrend = ((pH - prevPH) / (prevPH || 1)) * 100
 
   const cards = [
     { 
@@ -130,7 +158,8 @@ export default function SensorCards({ sensors }) {
       status: turbidityStatus(turbidity), 
       tooltip: 'Turbidity measures water clarity. Safe: below 4 NTU',
       trend: turbidityTrend,
-      trendValue: turbidityTrend.toFixed(1)
+      trendValue: turbidityTrend.toFixed(1),
+      dynamicMessage: turbidityMessage(turbidity)
     },
     { 
       label: 'pH level', 
@@ -140,17 +169,19 @@ export default function SensorCards({ sensors }) {
       status: pHStatus(pH), 
       tooltip: 'pH measures acidity. Safe range: 6.5 to 8.5',
       trend: pHTrend,
-      trendValue: pHTrend.toFixed(1)
+      trendValue: pHTrend.toFixed(1),
+      dynamicMessage: pHMessage(pH)
     },
     { 
       label: 'Temperature', 
       value: temperature.toFixed(1), 
       unit: '°C', 
-      sub: 'Contextual reading', 
+      sub: 'Ideal: 20–35°C', 
       status: tempStatus(), 
       tooltip: 'Temperature affects bacterial growth rate',
       trend: null,
-      trendValue: null
+      trendValue: null,
+      dynamicMessage: tempMessage(temperature)
     },
     { 
       label: 'Conductivity', 
@@ -160,7 +191,8 @@ export default function SensorCards({ sensors }) {
       status: conductivityStatus(conductivity), 
       tooltip: 'Conductivity measures dissolved salts. Safe: 50–500 μS/cm',
       trend: null,
-      trendValue: null
+      trendValue: null,
+      dynamicMessage: conductivityMessage(conductivity)
     },
   ]
 

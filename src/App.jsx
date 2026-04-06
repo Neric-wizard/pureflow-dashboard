@@ -7,6 +7,7 @@ import DecisionEngine from './components/DecisionEngine'
 import Charts from './components/Charts'
 import TechnicianView from './components/TechnicianView'
 
+// ── Simulated sensor data ──────────────────────────
 function generateSimData() {
   return {
     turbidity:    parseFloat((8 + (Math.random() * 8 - 4)).toFixed(1)),
@@ -16,6 +17,7 @@ function generateSimData() {
   }
 }
 
+// ── Safe static values for other sensors in Connectivity mode ──
 const safeStaticData = {
   turbidity: 2.5,
   pH: 7.2,
@@ -31,8 +33,9 @@ function calcSafetyScore(d) {
   if (d.conductivity > 500)         score -= 15
   return Math.max(0, Math.min(100, score))
 }
+// ──────────────────────────────────────────────────
 
-function Header({ role, setRole, sensors, mode, setMode }) {
+function Header({ role, setRole, sensors, mode, setMode, autoRefresh, setAutoRefresh }) {
   const [time, setTime] = useState(new Date())
   const [prevHealthScore, setPrevHealthScore] = useState(100)
   const [animatedHealth, setAnimatedHealth] = useState(100)
@@ -126,41 +129,52 @@ function Header({ role, setRole, sensors, mode, setMode }) {
         backgroundImage: `radial-gradient(circle at 20% 50%, rgba(59,130,246,${meshIntensity}), transparent 50%), radial-gradient(circle at 80% 80%, rgba(6,182,212,${meshIntensity}), transparent 50%)`
       }}
     >
-      {/* Animated Gradient Border */}
-      <div
-        className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-blue-600 via-cyan-400 via-emerald-400 to-blue-600 bg-[length:200%_100%] animate-gradient-flow"
-        style={{ opacity: 0.5 + (gradientIntensity * 0.5) }}
-      ></div>
-
-      {/* Scanner Beam */}
+      <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-blue-600 via-cyan-400 via-emerald-400 to-blue-600 bg-[length:200%_100%] animate-gradient-flow"></div>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-[-100%] w-1/3 h-full bg-gradient-to-r from-transparent via-blue-500/5 to-transparent skew-x-12 animate-scan"></div>
       </div>
-
-      {/* Mesh Gradients */}
-      <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px]" style={{ opacity: meshIntensity }}></div>
-      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-cyan-600/10 rounded-full blur-[100px]" style={{ opacity: meshIntensity }}></div>
-
-      {/* Noise Texture */}
+      <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px]"></div>
+      <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-cyan-600/10 rounded-full blur-[100px]"></div>
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
         style={{backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E")`}}>
       </div>
-
-      {/* Grain texture */}
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff05_0.5px,transparent_0.5px)] bg-[length:4px_4px] pointer-events-none"></div>
 
-      {/* ── MAIN ROW ── */}
       <div className="px-6 py-3 flex items-center justify-between gap-3 relative z-10">
 
-        {/* ── LOGO ── */}
-        <div className="relative group cursor-pointer flex-shrink-0 animate-slide-up [animation-delay:0ms]">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/10 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none"></div>
-          <img
-            src="/logo.png"
-            alt="PureFLOW"
-            className="relative h-20 w-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]"
-          />
+        {/* Logo */}
+        <div className="flex items-center gap-3 group cursor-pointer relative animate-slide-up [animation-delay:0ms]">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/40 to-cyan-400/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+            <div className="relative w-10 h-10 bg-gradient-to-br from-zinc-900 to-gray-950 border border-white/10 rounded-2xl flex items-center justify-center overflow-hidden backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.05),_0_2px_4px_rgba(0,0,0,0.4)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-50"></div>
+              <svg width="20" height="20" viewBox="0 0 18 18" fill="none" className="drop-shadow-sm">
+                <path d="M9 2C9 2 3.5 8 3.5 11.5a5.5 5.5 0 0011 0C14.5 8 9 2 9 2z" fill="rgba(59,130,246,0.3)" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6.5 12.5c.5 1.5 2 2 3 1.5" stroke="#06b6d4" strokeWidth="1.3" strokeLinecap="round"/>
+                <circle cx="9" cy="9" r="1" fill="#3b82f6" fillOpacity="0.6"/>
+              </svg>
+            </div>
+          </div>
+          <div>
+            <h1 className="font-sans text-lg font-semibold tracking-tight bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent group-hover:from-blue-300 group-hover:to-cyan-300 transition-all duration-300">
+              Pure<span className="text-blue-400">FLOW</span>
+            </h1>
+            <p className="text-[10px] text-gray-400 tracking-tight font-sans">SMART WATER STERILIZATION</p>
+          </div>
         </div>
+
+        {/* ── AUTO-REFRESH TOGGLE BUTTON ── */}
+        <button
+          onClick={() => setAutoRefresh(!autoRefresh)}
+          className={`flex items-center gap-1 px-2 py-1 rounded-full text-[9px] font-mono transition-all duration-300 ${
+            autoRefresh 
+              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
+              : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+          }`}
+          title={autoRefresh ? 'Auto-refresh ON — click to pause' : 'Auto-refresh OFF — click to resume'}
+        >
+          {autoRefresh ? '🔴 LIVE' : '⏸️ PAUSED'}
+        </button>
 
         {/* ── DESKTOP: Mode Toggle (hidden on mobile) ── */}
         <div className="hidden md:flex items-center gap-2 rounded-full p-0.5 border bg-zinc-900/50 border-white/10 animate-slide-up [animation-delay:50ms]">
@@ -234,7 +248,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
 
           {/* Sensor Cards */}
           <div className="flex gap-2">
-            {/* Turbidity Card */}
             <div className="group relative">
               <div className="transition-all duration-500 hover:border-blue-500/60 hover:shadow-blue-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]">
                 <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,17 +277,7 @@ function Header({ role, setRole, sensors, mode, setMode }) {
                   </div>
                 </div>
               </div>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none">
-                <div className="bg-zinc-900/95 border border-white/10 rounded-xl px-3 py-2 backdrop-blur-md shadow-xl">
-                  <div className="text-[10px] font-mono text-gray-400">Turbidity</div>
-                  <div className="text-xs font-mono font-bold text-blue-300">{turbidity.toFixed(1)} NTU</div>
-                  <div className="text-[9px] text-rose-400 mt-1">⚠️ Above 8 NTU = Unsafe</div>
-                  <div className="text-[8px] text-emerald-400 mt-0.5">24h change: {trendDirection} {Math.abs(parseFloat(trendPercent))}%</div>
-                </div>
-              </div>
             </div>
-
-            {/* pH Card */}
             <div className="group relative">
               <div className="transition-all duration-500 hover:border-amber-500/60 hover:shadow-amber-500/20 hover:-translate-y-0.5 px-3 py-1.5 rounded-2xl backdrop-blur-md flex items-center gap-2 bg-zinc-900/30 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.03),_0_4px_8px_rgba(0,0,0,0.2)]">
                 <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,22 +293,12 @@ function Header({ role, setRole, sensors, mode, setMode }) {
                   </div>
                 </div>
               </div>
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none">
-                <div className="bg-zinc-900/95 border border-white/10 rounded-xl px-3 py-2 backdrop-blur-md shadow-xl">
-                  <div className="text-[10px] font-mono text-gray-400">pH Level</div>
-                  <div className="text-xs font-mono font-bold text-amber-300">{pH.toFixed(1)}</div>
-                  <div className="text-[9px] text-rose-400 mt-1">⚠️ Safe range: 6.5 – 8.5</div>
-                  <div className="text-[8px] text-emerald-400 mt-0.5">24h trend: +0.2 pH</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
         {/* ── DESKTOP: Right Section (hidden on mobile) ── */}
         <div className="hidden md:flex items-center gap-2 animate-slide-up [animation-delay:200ms]">
-
-          {/* Live Indicator */}
           <div className="relative group">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/50 border border-white/10 backdrop-blur-sm cursor-pointer">
               <div className="relative">
@@ -323,8 +316,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               </div>
             </div>
           </div>
-
-          {/* Location — only at xl (1280px+) */}
           <div className="hidden xl:flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-tighter px-3 py-1.5 rounded-full bg-zinc-900/30 border-white/5">
             <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -337,16 +328,12 @@ function Header({ role, setRole, sensors, mode, setMode }) {
             ))}
             <span className="flex h-1 w-1 rounded-full bg-blue-500 animate-pulse ml-1"></span>
           </div>
-
-          {/* Timestamp — only at xl (1280px+) */}
           <div className="hidden xl:flex items-center gap-1.5 font-mono text-[8px] text-gray-400 tracking-wide bg-zinc-900/30 px-3 py-1.5 rounded-full border-white/5">
             <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
-
-          {/* Role Toggle */}
           <div className="relative">
             <div className="flex bg-zinc-900/60 rounded-full p-0.5 backdrop-blur-md border border-white/10">
               <div
@@ -374,13 +361,12 @@ function Header({ role, setRole, sensors, mode, setMode }) {
           </div>
         </div>
 
-        {/* ── MOBILE: Status dot + Hamburger ── */}
+        {/* Mobile: Status dot + Hamburger */}
         <div className="flex md:hidden items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${danger ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></div>
           <button
             onClick={() => setMobileOpen(prev => !prev)}
             className="flex items-center justify-center w-9 h-9 rounded-xl bg-zinc-900/60 border border-white/10 backdrop-blur-md transition-all duration-200 active:scale-95"
-            aria-label="Toggle menu"
           >
             {mobileOpen ? (
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -395,10 +381,9 @@ function Header({ role, setRole, sensors, mode, setMode }) {
         </div>
       </div>
 
-      {/* ── MOBILE DROPDOWN PANEL ── */}
+      {/* Mobile dropdown panel */}
       {mobileOpen && (
         <div className="md:hidden relative z-10 border-t border-white/5 bg-zinc-950/90 backdrop-blur-xl px-4 py-4 flex flex-col gap-4">
-          {/* Mode Toggle */}
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Mode</p>
             <div className="flex items-center gap-2 bg-zinc-900/50 rounded-full p-0.5 border border-white/10 w-fit">
@@ -416,8 +401,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               </button>
             </div>
           </div>
-
-          {/* Health + Status */}
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">System Status</p>
             <div className="flex items-center gap-4 flex-wrap">
@@ -452,8 +435,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               )}
             </div>
           </div>
-
-          {/* Sensor Cards */}
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Sensors</p>
             <div className="flex gap-2 flex-wrap">
@@ -474,8 +455,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               </div>
             </div>
           </div>
-
-          {/* Connection + Location + Time */}
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Connection</p>
             <div className="flex flex-col gap-2">
@@ -503,8 +482,6 @@ function Header({ role, setRole, sensors, mode, setMode }) {
               </div>
             </div>
           </div>
-
-          {/* Role Toggle */}
           <div>
             <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest mb-1.5">Role</p>
             <div className="relative w-fit">
@@ -542,13 +519,13 @@ function Header({ role, setRole, sensors, mode, setMode }) {
 export default function App() {
   const [role, setRole] = useState('household')
   const [mode, setMode] = useState('demo')
-  const [darkMode, setDarkMode] = useState(true)
-
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  
   const [simSensors, setSimSensors] = useState(generateSimData())
   const [fbTurbidity, setFbTurbidity] = useState(5.0)
-
-  const sensors = mode === 'demo'
-    ? simSensors
+  
+  const sensors = mode === 'demo' 
+    ? simSensors 
     : {
         turbidity: fbTurbidity,
         pH: safeStaticData.pH,
@@ -556,13 +533,28 @@ export default function App() {
         conductivity: safeStaticData.conductivity,
       }
 
+  // ── Dynamic Page Title ──
   useEffect(() => {
+    const danger = sensors.turbidity > 8 || sensors.pH < 6.5 || sensors.pH > 8.5
+    if (danger) {
+      document.title = '⚠️ ALERT | PureFLOW'
+    } else {
+      document.title = 'PureFLOW | Smart Water Sterilization'
+    }
+  }, [sensors])
+
+  // ── Auto-refresh simulation ──
+  useEffect(() => {
+    if (!autoRefresh) return
     const interval = setInterval(() => {
-      if (mode === 'demo') setSimSensors(generateSimData())
+      if (mode === 'demo') {
+        setSimSensors(generateSimData())
+      }
     }, 5000)
     return () => clearInterval(interval)
-  }, [mode])
+  }, [mode, autoRefresh])
 
+  // ── Connectivity mode simulation ──
   useEffect(() => {
     const interval = setInterval(() => {
       if (mode === 'connect') {
@@ -578,21 +570,25 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-950">
-      <Header
-        role={role}
-        setRole={setRole}
-        sensors={sensors}
-        mode={mode}
+      <Header 
+        role={role} 
+        setRole={setRole} 
+        sensors={sensors} 
+        mode={mode} 
         setMode={setMode}
+        autoRefresh={autoRefresh}
+        setAutoRefresh={setAutoRefresh}
       />
       <main className="p-4 flex flex-col gap-3">
         <SafetyGauge score={safetyScore} />
         <SensorCards sensors={sensors} />
+
         <div className="grid grid-cols-1 lg:grid-cols-[185px_1fr_208px] gap-3">
           <SystemStatus sensors={sensors} />
           <IsoPipeline sensors={sensors} />
           <DecisionEngine sensors={sensors} />
         </div>
+
         <Charts sensors={sensors} />
         {role === 'technician' && <TechnicianView sensors={sensors} />}
       </main>
