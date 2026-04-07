@@ -27,16 +27,6 @@ function pHMessage(v) {
   return '✅ pH optimal — within safe range'
 }
 
-function tempStatus() {
-  return { label: '● Normal', cls: 'bg-blue-500/20 text-blue-400', color: '#3b82f6', icon: '🌡️' }
-}
-
-function tempMessage(v) {
-  if (v > 35) return '⚠️ High temperature — bacteria risk elevated'
-  if (v < 20) return '📊 Low temperature — treatment efficiency may decrease'
-  return '✅ Temperature optimal'
-}
-
 function conductivityStatus(v) {
   if (v > 500) return { label: '▲ High',   cls: 'bg-red-500/20 text-red-400', color: '#ef4444', icon: '⚡' }
   if (v > 400) return { label: '▲ Warning', cls: 'bg-amber-500/20 text-amber-400', color: '#eab308', icon: '⚡' }
@@ -107,7 +97,7 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
 
         <div className="flex items-center gap-2 mb-3">
           <span className="font-mono text-3xl font-bold tracking-[-0.04em] tabular-nums leading-none transition-all duration-300" style={{ color: status.color }}>
-            {typeof animatedValue === 'number' ? animatedValue.toFixed(unit === 'NTU' ? 1 : unit === '°C' ? 1 : 0) : value}
+            {typeof animatedValue === 'number' ? animatedValue.toFixed(unit === 'NTU' ? 1 : 0) : value}
           </span>
           {unit && <span className="font-mono text-xs text-gray-400 tracking-wide">{unit}</span>}
           
@@ -122,7 +112,6 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
           {status.label}
         </span>
 
-        {/* Dynamic Message */}
         <p className="font-mono text-[9px] text-gray-400 mt-3 leading-relaxed border-t border-white/10 pt-2">
           {dynamicMessage}
         </p>
@@ -134,10 +123,8 @@ function SensorCard({ label, value, unit, sub, status, tooltip, trend, trendValu
 }
 
 export default function SensorCards({ sensors }) {
-  const { turbidity, pH, temperature, conductivity } = sensors
+  const { turbidity, pH, conductivity } = sensors
 
-  // Calculate trend based on current vs previous (simulated)
-  // For simplicity, we'll use a rolling effect — pH will update every time sensors change
   const [prevTurbidity, setPrevTurbidity] = useState(turbidity)
   const [prevPH, setPrevPH] = useState(pH)
 
@@ -173,17 +160,6 @@ export default function SensorCards({ sensors }) {
       dynamicMessage: pHMessage(pH)
     },
     { 
-      label: 'Temperature', 
-      value: temperature.toFixed(1), 
-      unit: '°C', 
-      sub: 'Ideal: 20–35°C', 
-      status: tempStatus(), 
-      tooltip: 'Temperature affects bacterial growth rate',
-      trend: null,
-      trendValue: null,
-      dynamicMessage: tempMessage(temperature)
-    },
-    { 
       label: 'Conductivity', 
       value: Math.round(conductivity), 
       unit: 'μS/cm', 
@@ -197,7 +173,7 @@ export default function SensorCards({ sensors }) {
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {cards.map(card => <SensorCard key={card.label} {...card} />)}
     </div>
   )

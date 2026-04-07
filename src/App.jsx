@@ -6,6 +6,8 @@ import IsoPipeline from './components/IsoPipeline'
 import DecisionEngine from './components/DecisionEngine'
 import Charts from './components/Charts'
 import TechnicianView from './components/TechnicianView'
+import AIPrediction from './components/AIPrediction'
+import { listenToSensorData } from './services/firebase'
 
 // ── Simulated sensor data ──────────────────────────
 function generateSimData() {
@@ -510,17 +512,48 @@ export default function App() {
   const [mode, setMode] = useState('demo')
   const [autoRefresh, setAutoRefresh] = useState(true)
   
+  // ── Firebase real data ──
+  const [firebaseSensors, setFirebaseSensors] = useState(null)
+  const [isFirebaseConnected, setIsFirebaseConnected] = useState(false)
+  
+  // Simulated data for demo mode
   const [simSensors, setSimSensors] = useState(generateSimData())
+  
+  // Connectivity mode: turbidity from Firebase (simulated for now)
   const [fbTurbidity, setFbTurbidity] = useState(5.0)
   
-  const sensors = mode === 'demo' 
-    ? simSensors 
-    : {
-        turbidity: fbTurbidity,
-        pH: safeStaticData.pH,
-        temperature: safeStaticData.temperature,
-        conductivity: safeStaticData.conductivity,
-      }
+  // Listen to Firebase real-time data
+  useEffect(() => {
+    const unsubscribe = listenToSensorData((data) => {
+      console.log('📡 Firebase real data:', data)
+      setFirebaseSensors(data)
+      setIsFirebaseConnected(true)
+    })
+    
+    return () => unsubscribe && unsubscribe()
+  }, [])
+  
+  // Combine sensors based on mode
+  let sensors
+  
+  if (mode === 'demo') {
+    sensors = simSensors
+  } else if (mode === 'connect') {
+    sensors = {
+      turbidity: fbTurbidity,
+      pH: safeStaticData.pH,
+      temperature: safeStaticData.temperature,
+      conductivity: safeStaticData.conductivity,
+    }
+  } else {
+    // Real mode (when ESP32 is connected)
+    sensors = firebaseSensors || {
+      turbidity: 0,
+      pH: 7.0,
+      temperature: 25,
+      conductivity: 300,
+    }
+  }
 
   // ── Dynamic Page Title ──
   useEffect(() => {
@@ -532,7 +565,7 @@ export default function App() {
     }
   }, [sensors])
 
-  // ── Auto-refresh simulation ──
+  // ── Auto-refresh simulation (Demo mode only) ──
   useEffect(() => {
     if (!autoRefresh) return
     const interval = setInterval(() => {
@@ -579,6 +612,9 @@ export default function App() {
         </div>
 
         <Charts sensors={sensors} />
+
+        <AIPrediction sensors={sensors} />
+        
         {role === 'technician' && <TechnicianView sensors={sensors} />}
       </main>
     </div>
